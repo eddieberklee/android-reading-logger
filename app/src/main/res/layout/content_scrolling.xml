@@ -13,11 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <!-- For some reason, even with web development, I've always like
+             an empty view/box as opposed to margin -->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
         
         <ListView
             android:id="@+id/books_listview"
             android:layout_width="match_parent"
-            android:layout_height="300dp"/>
+            android:layout_height="300dp"
+            style="@style/BooksListTheme"/>
 
         <TextView
             android:layout_width="wrap_content"
