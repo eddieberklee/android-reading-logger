@@ -3,4 +3,47 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!-- flat ui colors-->
+    <color name="flatui_lightgrey_1">#ecf0f1</color>
+    <color name="flatui_lightgrey_2">#bdc3c7</color>
+    <color name="flatui_grey_1">#95a5a6</color>
+    <color name="flatui_grey_2">#7f8c8d</color>
+    <color name="flatui_red_1">#e74c3c</color>
+    <color name="flatui_red_2">#c0392b</color>
+    <color name="flatui_orange_1">#e67e22</color>
+    <color name="flatui_orange_2">#d35400</color>
+    <color name="flatui_yellow_1">#f1c40f</color>
+    <color name="flatui_yellow_2">#f39c12</color>
+    <color name="flatui_teal_1">#1abc9c</color>
+    <color name="flatui_teal_2">#16a085</color>
+    <color name="flatui_green_1">#2ecc71</color>
+    <color name="flatui_green_2">#27ae60</color>
+    <color name="flatui_blue_1">#3498db</color>
+    <color name="flatui_blue_2">#2980b9</color>
+    <color name="flatui_purple_1">#9b59b6</color>
+    <color name="flatui_purple_2">#8e44ad</color>
+    <color name="flatui_midnightblue_1">#34495e</color>
+    <color name="flatui_midnightblue_2">#2c3e50</color>
+
+    <color name="black_transp_10">#1A000000</color>
+    <color name="black_transp_20">#33000000</color>
+    <color name="black_transp_30">#4D000000</color>
+    <color name="black_transp_40">#66000000</color>
+    <color name="black_transp_50">#80000000</color>
+    <color name="black_transp_60">#99000000</color>
+    <color name="black_transp_70">#B3000000</color>
+    <color name="black_transp_80">#CC000000</color>
+    <color name="black_transp_90">#E6000000</color>
+
+    <color name="white_transp_10">#1AFFFFFF</color>
+    <color name="white_transp_20">#33FFFFFF</color>
+    <color name="white_transp_30">#4DFFFFFF</color>
+    <color name="white_transp_40">#66FFFFFF</color>
+    <color name="white_transp_50">#80FFFFFF</color>
+    <color name="white_transp_60">#99FFFFFF</color>
+    <color name="white_transp_70">#B3FFFFFF</color>
+    <color name="white_transp_80">#CCFFFFFF</color>
+    <color name="white_transp_90">#E6FFFFFF</color>
+
 </resources>
