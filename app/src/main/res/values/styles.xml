@@ -21,10 +21,17 @@
     </style>
 
     <style name="BooksListTheme" parent="VanillaListTheme">
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
         <item name="android:paddingLeft">12dp</item>
         <item name="android:paddingRight">12dp</item>
+    </style>
+
+    <style name="NumButtonStyle">
+        <item name="android:layout_width">@dimen/number_button_size</item>
+        <item name="android:layout_height">@dimen/number_button_size</item>
+        <item name="android:background">@drawable/outlined_circle</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
 </resources>

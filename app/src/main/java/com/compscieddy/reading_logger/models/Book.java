@@ -1,11 +1,12 @@
 package com.compscieddy.reading_logger.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by elee on 12/3/15.
  */
-public class Book {
+public class Book implements Serializable {
 
   public Book(String title, int currentPageNum, int dayStartedReading, int dayFinishedReading,
               ArrayList<ReadingSession> readingSessionHistory) {

@@ -1,5 +1,6 @@
-package com.compscieddy.reading_logger;
+package com.compscieddy.reading_logger.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,19 +9,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.adapter.BooksArrayAdapter;
 import com.compscieddy.reading_logger.models.Book;
-import com.compscieddy.reading_logger.models.ReadingSession;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ScrollingActivity extends AppCompatActivity {
 
   ListView mBooksListView;
   BooksArrayAdapter mBooksAdapter;
-  ArrayList<Book> mBooksList;
+  List<Book> mBooksList;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,18 @@ public class ScrollingActivity extends AppCompatActivity {
     ));
     mBooksAdapter = new BooksArrayAdapter(ScrollingActivity.this, mBooksList);
     mBooksListView.setAdapter(mBooksAdapter);
+
+    mBooksListView.setOnItemClickListener(mBooksListOnItemClickListener);
   }
+
+  AdapterView.OnItemClickListener mBooksListOnItemClickListener = new AdapterView.OnItemClickListener() {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+      Intent pageNumberInputIntent = new Intent(ScrollingActivity.this, PageNumberInputActivity.class);
+      pageNumberInputIntent.putExtra(PageNumberInputActivity.BOOK_EXTRA, mBooksList.get(position));
+      startActivity(pageNumberInputIntent);
+    }
+  };
 
   private void init() {
     mBooksListView = (ListView) findViewById(R.id.books_listview);
