@@ -134,6 +134,12 @@ public class PageNumberInputActivity extends AppCompatActivity {
     mNumberButton9.setOnClickListener(mNumberButtonClickListener);
     mNumberButton0.setOnClickListener(mNumberButtonClickListener);
     mNumberButtonDelete.setOnClickListener(mNumberButtonClickListener);
+    mCloseButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        finish();
+      }
+    });
   }
 
 }
