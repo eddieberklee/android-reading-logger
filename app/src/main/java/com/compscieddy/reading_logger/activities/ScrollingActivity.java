@@ -1,6 +1,7 @@
 package com.compscieddy.reading_logger.activities;
 
-import android.content.Intent;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.compscieddy.reading_logger.PageNumberInputFragment;
 import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.adapter.BooksArrayAdapter;
 import com.compscieddy.reading_logger.models.Book;
@@ -74,9 +76,18 @@ public class ScrollingActivity extends AppCompatActivity {
   AdapterView.OnItemClickListener mBooksListOnItemClickListener = new AdapterView.OnItemClickListener() {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-      Intent pageNumberInputIntent = new Intent(ScrollingActivity.this, PageNumberInputActivity.class);
-      pageNumberInputIntent.putExtra(PageNumberInputActivity.BOOK_EXTRA, mBooksList.get(position));
-      startActivity(pageNumberInputIntent);
+      FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+      Fragment previousFragment = getFragmentManager().findFragmentByTag(PageNumberInputFragment.PAGE_NUMBER_DIALOG);
+      if (previousFragment != null) {
+        fragmentTransaction.remove(previousFragment);
+      }
+      fragmentTransaction.addToBackStack(null);
+
+      PageNumberInputFragment pageNumberInputFragment = new PageNumberInputFragment();
+      Bundle args = new Bundle();
+      args.putSerializable(PageNumberInputFragment.BOOK_EXTRA, mBooksList.get(position));
+      pageNumberInputFragment.setArguments(args);
+      pageNumberInputFragment.show(fragmentTransaction, PageNumberInputFragment.PAGE_NUMBER_DIALOG);
     }
   };
 
