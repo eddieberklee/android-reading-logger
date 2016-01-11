@@ -36,3 +36,5 @@ proguard/
 
 *.sw*
 *.iml
+
+secrets.xml
