@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.compscieddy.reading_logger.BookInputFragment;
-import com.compscieddy.reading_logger.PageLogInputFragment;
 import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.adapter.BooksArrayAdapter;
 import com.compscieddy.reading_logger.models.Book;
@@ -92,18 +91,7 @@ public class ScrollingActivity extends AppCompatActivity {
   AdapterView.OnItemClickListener mBooksListOnItemClickListener = new AdapterView.OnItemClickListener() {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-      FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-      Fragment previousFragment = getFragmentManager().findFragmentByTag(PageLogInputFragment.PAGE_NUMBER_DIALOG);
-      if (previousFragment != null) {
-        fragmentTransaction.remove(previousFragment);
-      }
-      fragmentTransaction.addToBackStack(null);
-
-      PageLogInputFragment pageLogInputFragment = new PageLogInputFragment();
-      Bundle args = new Bundle();
-      args.putSerializable(PageLogInputFragment.BOOK_EXTRA, mBooksList.get(position));
-      pageLogInputFragment.setArguments(args);
-      pageLogInputFragment.show(fragmentTransaction, PageLogInputFragment.PAGE_NUMBER_DIALOG);
+      // todo: open a separate screen for each book
     }
   };
 
