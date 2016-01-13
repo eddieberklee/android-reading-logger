@@ -7,8 +7,6 @@ To run:
   <string name="parse_app_id">asdfasdfasdfasdf</string>
 
 
-TODO:
-  * PageNumberInputActivity needs to be a dialog and transparent (that's the whole point)
 
 
 
