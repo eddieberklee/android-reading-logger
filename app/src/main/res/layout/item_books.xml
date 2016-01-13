@@ -20,11 +20,21 @@
         android:layout_weight="1"/>
 
     <TextView
+        android:id="@+id/current_page_label"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:textSize="10sp"
         android:text="Current Page:"/>
+
+    <TextView
+        android:id="@+id/empty_page_label"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textSize="10sp"
+        android:text="Start Reading!"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/item_current_page_number"

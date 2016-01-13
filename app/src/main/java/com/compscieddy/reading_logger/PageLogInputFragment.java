@@ -104,6 +104,8 @@ public class PageLogInputFragment extends DialogFragment {
     Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
     Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
 
+    mBook.setEditTextCurrentPageNumToView(mPageNumberInput);
+
     mBookTitleView.setText(mBook.getTitle());
 
     setListeners();

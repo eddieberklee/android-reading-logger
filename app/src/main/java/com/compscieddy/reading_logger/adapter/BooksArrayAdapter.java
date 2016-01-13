@@ -40,6 +40,8 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
     TextView bookTitleView = (TextView) convertView.findViewById(R.id.item_book_title);
     final TextView currentPageNumView = (TextView) convertView.findViewById(R.id.item_current_page_number);
     final Book currentBook = mBooksList.get(position);
+    final TextView currentPageLabel = (TextView) convertView.findViewById(R.id.current_page_label);
+    final TextView emptyPageLabel = (TextView) convertView.findViewById(R.id.empty_page_label);
     bookTitleView.setText(currentBook.getTitle());
 
     ParseQuery currentPageNumQuery = currentBook.getCurrentPageNumQuery();
@@ -47,10 +49,17 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
       @Override
       public void done(List<PageLog> objects, ParseException e) {
         if (objects.size() > 0) {
-          int currentPageNum = ((PageLog) objects.get(0)).getPageNum();
+          int currentPageNum = (objects.get(0)).getPageNum();
           currentPageNumView.setText(String.valueOf(currentPageNum));
+
+          currentPageNumView.setVisibility(View.VISIBLE);
+          currentPageLabel.setVisibility(View.VISIBLE);
+          emptyPageLabel.setVisibility(View.GONE);
         } else {
           // todo: is no current page number - handle this some other way than just not populating or populating with 0
+          currentPageNumView.setVisibility(View.GONE);
+          currentPageLabel.setVisibility(View.GONE);
+          emptyPageLabel.setVisibility(View.VISIBLE);
         }
       }
     });
