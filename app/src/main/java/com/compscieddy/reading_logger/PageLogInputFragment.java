@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.compscieddy.reading_logger.activities.ScrollingActivity;
 import com.compscieddy.reading_logger.models.Book;
 import com.compscieddy.reading_logger.models.PageLog;
 
@@ -136,6 +137,7 @@ public class PageLogInputFragment extends DialogFragment {
         pageLog.setPageNum(Integer.parseInt(mPageNumberInput.getText().toString()));
         pageLog.put(Book.class.getSimpleName(), mBook);
         pageLog.saveInBackground(); // todo should add a callback and show progressbar - or maybe something else if user shouldn't be kept waiting
+        ((ScrollingActivity) getActivity()).refreshBooksList();
         getDialog().dismiss();
       }
     });

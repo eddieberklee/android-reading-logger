@@ -39,6 +39,9 @@ public class AuthenticationActivity extends AppCompatActivity {
       startActivity(intent);
     }
 
+    mEmailInput.setText("test@test.com");
+    mPasswordInput.setText("password"); // pre-fill cause no need to make my sad #stillsingle existential-crisis-laden life harder than it already is
+
     mAuthenticationButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
