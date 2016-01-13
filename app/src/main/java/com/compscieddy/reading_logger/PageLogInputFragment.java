@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.compscieddy.reading_logger.models.Book;
+import com.compscieddy.reading_logger.models.PageLog;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,13 +24,13 @@ import butterknife.ButterKnife;
 /**
  * Created by elee on 1/9/16.
  */
-public class PageNumberInputFragment extends DialogFragment {
+public class PageLogInputFragment extends DialogFragment {
 
-  private static final String TAG = PageNumberInputFragment.class.getSimpleName();
+  private static final String TAG = PageLogInputFragment.class.getSimpleName();
 
   public static final String PAGE_NUMBER_DIALOG = "page_number_dialog";
   public static final String BOOK_EXTRA = "book_extra";
-  private Book mBookReceived;
+  private Book mBook;
   private View mRootView;
 
   @Bind(R.id.number_button_1) View mNumberButton1;
@@ -94,14 +96,14 @@ public class PageNumberInputFragment extends DialogFragment {
     ButterKnife.bind(this, mRootView);
 
     Bundle args = getArguments();
-    mBookReceived = (Book) args.getSerializable(BOOK_EXTRA);
+    mBook = (Book) args.getSerializable(BOOK_EXTRA);
 
     Util.applyColorFilter(mCheckButton.getDrawable(), getResources().getColor(android.R.color.white));
     Util.applyColorFilter(mCheckButton.getBackground(), getResources().getColor(R.color.flatui_green_1));
     Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
     Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
 
-    mBookTitleView.setText(mBookReceived.title);
+    mBookTitleView.setText(mBook.getTitle());
 
     setListeners();
 
@@ -123,6 +125,17 @@ public class PageNumberInputFragment extends DialogFragment {
     mCloseButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
+        getDialog().dismiss();
+      }
+    });
+    mCheckButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        PageLog pageLog = new PageLog();
+        Log.d(TAG, "Setting page number to this: " + Integer.parseInt(mPageNumberInput.getText().toString()));
+        pageLog.setPageNum(Integer.parseInt(mPageNumberInput.getText().toString()));
+        pageLog.put(Book.class.getSimpleName(), mBook);
+        pageLog.saveInBackground(); // todo should add a callback and show progressbar - or maybe something else if user shouldn't be kept waiting
         getDialog().dismiss();
       }
     });

@@ -4,24 +4,29 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.compscieddy.reading_logger.PageNumberInputFragment;
+import com.compscieddy.reading_logger.BookInputFragment;
+import com.compscieddy.reading_logger.PageLogInputFragment;
 import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.adapter.BooksArrayAdapter;
 import com.compscieddy.reading_logger.models.Book;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScrollingActivity extends AppCompatActivity {
+
+  private static final String TAG = ScrollingActivity.class.getSimpleName();
 
   ListView mBooksListView;
   BooksArrayAdapter mBooksAdapter;
@@ -38,56 +43,67 @@ public class ScrollingActivity extends AppCompatActivity {
     fab.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-            .setAction("Action", null).show();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        Fragment oldFragment = getFragmentManager().findFragmentByTag(BookInputFragment.BOOK_DIALOG);
+        if (oldFragment != null) {
+          transaction.remove(oldFragment);
+        }
+        transaction.addToBackStack(null);
+
+        BookInputFragment bookInputFragment = new BookInputFragment();
+        bookInputFragment.show(transaction, BookInputFragment.BOOK_DIALOG);
       }
     });
 
     init();
 
     mBooksList = new ArrayList<>();
-    mBooksList.add(new Book(
-        "Alchemist",
-        13,
-        19,
-        29,
-        null
-    ));
-    mBooksList.add(new Book(
-        "Passionate Programming",
-        23,
-        99,
-        30,
-        null
-    ));
-    mBooksList.add(new Book(
-        "Ruby on Rails for Dummies",
-        57,
-        28,
-        63,
-        null
-    ));
-    mBooksAdapter = new BooksArrayAdapter(ScrollingActivity.this, mBooksList);
-    mBooksListView.setAdapter(mBooksAdapter);
+    Book.getQuery().findInBackground(new FindCallback<Book>() {
+      @Override
+      public void done(List<Book> objects, ParseException e) {
+        if (e == null) {
+          mBooksList = new ArrayList<>(objects);
+          mBooksAdapter = new BooksArrayAdapter(ScrollingActivity.this, mBooksList);
+          mBooksListView.setAdapter(mBooksAdapter);
+        } else {
+          Log.d(TAG, "Error getting all books", e);
+        }
+      }
+    });
 
     mBooksListView.setOnItemClickListener(mBooksListOnItemClickListener);
+  }
+
+  public void refreshBooksList() {
+    Book.getQuery().findInBackground(new FindCallback<Book>() {
+      @Override
+      public void done(List<Book> objects, ParseException e) {
+        if (e == null) {
+          mBooksList = new ArrayList<>(objects);
+          mBooksAdapter = new BooksArrayAdapter(ScrollingActivity.this, mBooksList);
+          mBooksListView.setAdapter(mBooksAdapter);
+        } else {
+          Log.d(TAG, "Error getting all books", e);
+        }
+      }
+    });
   }
 
   AdapterView.OnItemClickListener mBooksListOnItemClickListener = new AdapterView.OnItemClickListener() {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
       FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-      Fragment previousFragment = getFragmentManager().findFragmentByTag(PageNumberInputFragment.PAGE_NUMBER_DIALOG);
+      Fragment previousFragment = getFragmentManager().findFragmentByTag(PageLogInputFragment.PAGE_NUMBER_DIALOG);
       if (previousFragment != null) {
         fragmentTransaction.remove(previousFragment);
       }
       fragmentTransaction.addToBackStack(null);
 
-      PageNumberInputFragment pageNumberInputFragment = new PageNumberInputFragment();
+      PageLogInputFragment pageLogInputFragment = new PageLogInputFragment();
       Bundle args = new Bundle();
-      args.putSerializable(PageNumberInputFragment.BOOK_EXTRA, mBooksList.get(position));
-      pageNumberInputFragment.setArguments(args);
-      pageNumberInputFragment.show(fragmentTransaction, PageNumberInputFragment.PAGE_NUMBER_DIALOG);
+      args.putSerializable(PageLogInputFragment.BOOK_EXTRA, mBooksList.get(position));
+      pageLogInputFragment.setArguments(args);
+      pageLogInputFragment.show(fragmentTransaction, PageLogInputFragment.PAGE_NUMBER_DIALOG);
     }
   };
 

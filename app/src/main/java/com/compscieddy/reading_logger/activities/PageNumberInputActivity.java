@@ -58,7 +58,7 @@ public class PageNumberInputActivity extends AppCompatActivity {
     Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
     Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
 
-    mBookTitleView.setText(mBookReceived.title);
+    mBookTitleView.setText(mBookReceived.getTitle());
 
   }
 
