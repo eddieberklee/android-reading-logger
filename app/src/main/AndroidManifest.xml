@@ -18,6 +18,7 @@
         <meta-data
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/parse_client_key"/>
+
         <activity
             android:name=".activities.ScrollingActivity"
             android:label="@string/app_name"
@@ -26,8 +27,14 @@
         <activity android:name=".activities.AuthenticationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.BookActivity"
+            android:label="@string/title_activity_book"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

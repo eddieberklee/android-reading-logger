@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +65,7 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
 
         PageLogInputFragment pageLogInputFragment = new PageLogInputFragment();
         Bundle args = new Bundle();
-        args.putSerializable(PageLogInputFragment.BOOK_EXTRA, currentBook);
+        args.putString(Book.BOOK_ID_EXTRA, currentBook.getObjectId());
         pageLogInputFragment.setArguments(args);
         pageLogInputFragment.show(fragmentTransaction, PageLogInputFragment.PAGE_NUMBER_DIALOG);
       }
@@ -76,18 +77,22 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
     currentPageNumQuery.findInBackground(new FindCallback<PageLog>() {
       @Override
       public void done(List<PageLog> objects, ParseException e) {
-        if (objects.size() > 0) {
-          int currentPageNum = (objects.get(0)).getPageNum();
-          currentPageNumView.setText(String.valueOf(currentPageNum));
+        if (e == null) {
+          if (objects != null && objects.size() > 0) {
+            int currentPageNum = (objects.get(0)).getPageNum();
+            currentPageNumView.setText(String.valueOf(currentPageNum));
 
-          currentPageNumView.setVisibility(View.VISIBLE);
-          currentPageLabel.setVisibility(View.VISIBLE);
-          emptyPageLabel.setVisibility(View.GONE);
+            currentPageNumView.setVisibility(View.VISIBLE);
+            currentPageLabel.setVisibility(View.VISIBLE);
+            emptyPageLabel.setVisibility(View.GONE);
+          } else {
+            // todo: is no current page number - handle this some other way than just not populating or populating with 0
+            currentPageNumView.setVisibility(View.GONE);
+            currentPageLabel.setVisibility(View.GONE);
+            emptyPageLabel.setVisibility(View.VISIBLE);
+          }
         } else {
-          // todo: is no current page number - handle this some other way than just not populating or populating with 0
-          currentPageNumView.setVisibility(View.GONE);
-          currentPageLabel.setVisibility(View.GONE);
-          emptyPageLabel.setVisibility(View.VISIBLE);
+          Log.e(TAG, "Error getting current page number", e);
         }
       }
     });

@@ -6,6 +6,7 @@
 
     <color name="white">#FFffffff</color>
     <color name="black">#FF000000</color>
+    <color name="transparent">#00000000</color>
 
     <!-- flat ui colors-->
     <color name="flatui_lightgrey_1">#ecf0f1</color>

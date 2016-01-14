@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.compscieddy.reading_logger.activities.ScrollingActivity;
 import com.compscieddy.reading_logger.models.Book;
@@ -31,13 +32,29 @@ public class BookInputFragment extends DialogFragment {
 
   @Bind(R.id.book_title_input) EditText mBookTitleInput;
   @Bind(R.id.add_book_button) View mAddBookButton;
+  @Bind(R.id.close_button) ImageView mCloseButton;
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setStyle(STYLE_NO_TITLE, R.style.FloatingNoStylingTheme);
+  }
 
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     mRootView = inflater.inflate(R.layout.fragment_book_input, null);
     ButterKnife.bind(this, mRootView);
+
+    Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
+    Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(R.color.white));
+
     return mRootView;
+  }
+
+  @OnClick(R.id.close_button)
+  public void close() {
+    getDialog().dismiss();
   }
 
   @OnClick(R.id.add_book_button)
@@ -50,7 +67,7 @@ public class BookInputFragment extends DialogFragment {
       book.put(KEY_TITLE, title);
       book.saveInBackground();
 
-      getDialog().dismiss();
+      close();
       ((ScrollingActivity) getActivity()).refreshBooksList();
     }
   }

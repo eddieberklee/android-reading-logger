@@ -2,6 +2,7 @@ package com.compscieddy.reading_logger.activities;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -91,7 +92,13 @@ public class ScrollingActivity extends AppCompatActivity {
   AdapterView.OnItemClickListener mBooksListOnItemClickListener = new AdapterView.OnItemClickListener() {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-      // todo: open a separate screen for each book
+      if (mBooksList.size() > 0) {
+        Book book = mBooksList.get(position);
+        Intent intent = new Intent(ScrollingActivity.this, BookActivity.class);
+        intent.putExtra(Book.BOOK_ID_EXTRA, book.getObjectId());
+        startActivity(intent);
+      }
+
     }
   };
 

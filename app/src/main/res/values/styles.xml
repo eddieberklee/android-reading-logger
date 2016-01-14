@@ -7,11 +7,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="VanillaListTheme"> <!-- default android stylings reversed -->
@@ -19,6 +22,7 @@
         <item name="android:dividerHeight">0dp</item>
         <item name="android:clipToPadding">false</item>
     </style>
+
 
     <style name="BooksListTheme" parent="VanillaListTheme">
         <item name="android:paddingTop">6dp</item>
@@ -39,6 +43,14 @@
         <item name="android:layout_height">40dp</item>
         <item name="android:background">@drawable/circle</item>
         <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="FloatingNoStylingTheme" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:backgroundDimAmount">0.70</item>
+        <item name="android:windowBackground">@color/transparent</item>
     </style>
 
 </resources>

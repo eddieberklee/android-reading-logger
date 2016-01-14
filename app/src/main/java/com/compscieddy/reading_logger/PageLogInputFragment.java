@@ -1,8 +1,6 @@
 package com.compscieddy.reading_logger;
 
 import android.app.DialogFragment;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -10,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +15,9 @@ import android.widget.TextView;
 import com.compscieddy.reading_logger.activities.ScrollingActivity;
 import com.compscieddy.reading_logger.models.Book;
 import com.compscieddy.reading_logger.models.PageLog;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,7 +30,6 @@ public class PageLogInputFragment extends DialogFragment {
   private static final String TAG = PageLogInputFragment.class.getSimpleName();
 
   public static final String PAGE_NUMBER_DIALOG = "page_number_dialog";
-  public static final String BOOK_EXTRA = "book_extra";
   private Book mBook;
   private View mRootView;
 
@@ -90,23 +89,40 @@ public class PageLogInputFragment extends DialogFragment {
     }
   };
 
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setStyle(STYLE_NO_TITLE, R.style.FloatingNoStylingTheme);
+  }
+
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    mRootView = inflater.inflate(R.layout.fragment_page_number_input, null);
+    mRootView = inflater.inflate(R.layout.fragment_page_log_input, null);
     ButterKnife.bind(this, mRootView);
 
     Bundle args = getArguments();
-    mBook = (Book) args.getSerializable(BOOK_EXTRA);
+    String bookId = args.getString(Book.BOOK_ID_EXTRA);
+
+    ParseQuery<Book> query = Book.getQuery();
+    query.getInBackground(bookId, new GetCallback<Book>() {
+      @Override
+      public void done(Book book, ParseException e) {
+        if (e != null) {
+          Log.e(TAG, "Error getting Book object", e);
+          return;
+        }
+        if (book == null) return;
+        mBook = book;
+        mBook.setEditTextCurrentPageNumToView(mPageNumberInput);
+        mBookTitleView.setText(mBook.getTitle());
+      }
+    });
 
     Util.applyColorFilter(mCheckButton.getDrawable(), getResources().getColor(android.R.color.white));
     Util.applyColorFilter(mCheckButton.getBackground(), getResources().getColor(R.color.flatui_green_1));
     Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
     Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
-
-    mBook.setEditTextCurrentPageNumToView(mPageNumberInput);
-
-    mBookTitleView.setText(mBook.getTitle());
 
     setListeners();
 
@@ -145,11 +161,4 @@ public class PageLogInputFragment extends DialogFragment {
     });
   }
 
-  @Override
-  public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-    getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-    getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-    setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme);
-  }
 }
