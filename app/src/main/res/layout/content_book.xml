@@ -47,7 +47,13 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"
         android:layout_width="300dp"
-        android:layout_height="100dp"/>
+        android:layout_height="100dp"
+        android:visibility="gone"/>
+
+    <com.db.chart.view.LineChartView
+        android:id="@+id/line_chart_view"
+        android:layout_width="300dp"
+        android:layout_height="200dp"/>
 
 
 </LinearLayout>
