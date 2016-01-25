@@ -19,7 +19,9 @@ import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.adapter.BooksArrayAdapter;
 import com.compscieddy.reading_logger.models.Book;
 import com.parse.FindCallback;
+import com.parse.LogOutCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +124,17 @@ public class ScrollingActivity extends AppCompatActivity {
 
     //noinspection SimplifiableIfStatement
     if (id == R.id.action_settings) {
+      return true;
+    } else if (id == R.id.action_logout) {
+      ParseUser.logOutInBackground(new LogOutCallback() {
+        @Override
+        public void done(ParseException e) {
+          Intent intent = new Intent(ScrollingActivity.this, AuthenticationActivity.class);
+          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+          startActivity(intent);
+        }
+      });
       return true;
     }
     return super.onOptionsItemSelected(item);

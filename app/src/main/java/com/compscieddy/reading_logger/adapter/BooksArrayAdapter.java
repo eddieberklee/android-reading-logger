@@ -40,18 +40,41 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
   }
 
   @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
+  public View getView(final int position, View convertView, ViewGroup parent) {
     if (convertView == null) {
       convertView = LayoutInflater.from(mActivity).inflate(R.layout.item_books, parent, false);
     }
+    final Book book = mBooksList.get(position);
+
     TextView bookTitleView = (TextView) convertView.findViewById(R.id.item_book_title);
     final TextView currentPageNumView = (TextView) convertView.findViewById(R.id.item_current_page_number);
-    final Book currentBook = mBooksList.get(position);
     final TextView currentPageLabel = (TextView) convertView.findViewById(R.id.current_page_label);
     final TextView emptyPageLabel = (TextView) convertView.findViewById(R.id.empty_page_label);
     ImageView newBookmarkButton = (ImageView) convertView.findViewById(R.id.new_bookmark_button);
+    ImageView deleteButton = (ImageView) convertView.findViewById(R.id.delete_button);
+    Util.applyColorFilter(deleteButton.getDrawable(), mActivity.getResources().getColor(R.color.book_row_button_color));
 
-    Util.applyColorFilter(newBookmarkButton.getDrawable(), mActivity.getResources().getColor(R.color.black_transp_10));
+    final View finalConvertView = convertView;
+    deleteButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        book.deleteInBackground();
+        finalConvertView.animate()
+            .translationX(-finalConvertView.getWidth())
+            .alpha(0.3f)
+            .withEndAction(new Runnable() {
+              @Override
+              public void run() {
+                finalConvertView.setTranslationX(0); // reset for future rows; be a good citizen
+                finalConvertView.setAlpha(1.0f);
+                mBooksList.remove(position);
+                notifyDataSetChanged();;
+              }
+            });
+      }
+    });
+
+    Util.applyColorFilter(newBookmarkButton.getDrawable(), mActivity.getResources().getColor(R.color.book_row_button_color));
 
     newBookmarkButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -65,15 +88,15 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
 
         PageLogInputFragment pageLogInputFragment = new PageLogInputFragment();
         Bundle args = new Bundle();
-        args.putString(Book.BOOK_ID_EXTRA, currentBook.getObjectId());
+        args.putString(Book.BOOK_ID_EXTRA, book.getObjectId());
         pageLogInputFragment.setArguments(args);
         pageLogInputFragment.show(fragmentTransaction, PageLogInputFragment.PAGE_NUMBER_DIALOG);
       }
     });
 
-    bookTitleView.setText(currentBook.getTitle());
+    bookTitleView.setText(book.getTitle());
 
-    ParseQuery currentPageNumQuery = currentBook.getCurrentPageNumQuery();
+    ParseQuery currentPageNumQuery = book.getCurrentPageNumQuery();
     currentPageNumQuery.findInBackground(new FindCallback<PageLog>() {
       @Override
       public void done(List<PageLog> objects, ParseException e) {

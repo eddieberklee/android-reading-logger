@@ -91,7 +91,6 @@ public class BookActivity extends AppCompatActivity {
     LineData lineData = new LineData(xVals, dataSets);
     mLineChart.setData(lineData);*/
 
-
     mLineChartView.setAxisBorderValues(0, 30, 10);
 
     LineSet dataSet = new LineSet(new String[] {
@@ -104,13 +103,7 @@ public class BookActivity extends AppCompatActivity {
     dataSet.setColor(getResources().getColor(R.color.flatui_blue_2));
     dataSet.setFill(getResources().getColor(R.color.flatui_blue_1_transp_50));
 
-    LineSet dataSet2 = new LineSet(new String[] {
-        "AW", "BW", "UI"
-    }, new float[] {
-        3, 6, 12,
-    });
     mLineChartView.addData(dataSet);
-    mLineChartView.addData(dataSet2);
     mLineChartView.show();
   }
 

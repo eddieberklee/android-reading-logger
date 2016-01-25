@@ -8,25 +8,42 @@
               android:paddingRight="8dp"
               android:gravity="center_vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/item_book_title"
+              android:layout_height="50dp">
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        tools:text="Book Title 1"/>
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/item_book_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:textSize="16sp"
+            tools:text="Book Title 1"/>
+        <TextView
+            android:id="@+id/current_page_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_book_title"
+            android:gravity="center_vertical"
+            android:textAllCaps="true"
+            android:textSize="8sp"
+            android:text="Current Page:"/>
+        <TextView
+            android:id="@+id/item_current_page_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/current_page_label"
+            android:layout_alignBaseline="@+id/current_page_label"
+            android:layout_marginLeft="3dp"
+            android:textSize="10sp"
+            tools:text="44"/>
+    </RelativeLayout>
 
     <View
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"/>
-
-    <TextView
-        android:id="@+id/current_page_label"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:textSize="10sp"
-        android:text="Current Page:"/>
 
     <TextView
         android:id="@+id/empty_page_label"
@@ -37,19 +54,19 @@
         android:text="Start Reading!"
         android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/item_current_page_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
-        android:textSize="12sp"
-        tools:text="44"/>
+    <ImageView
+        android:id="@+id/delete_button"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/ic_delete_white_48dp"/>
 
     <ImageView
         android:id="@+id/new_bookmark_button"
+        android:background="@drawable/circle_dashed_white_transp"
         android:layout_marginLeft="8dp"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:padding="5dp"
         android:src="@drawable/ic_new_bookmark"/>
 
 </LinearLayout>

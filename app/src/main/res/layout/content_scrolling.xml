@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- For some reason, even with web development, I've always like
+        <!-- For some reason, even with web development, I've always liked
              an empty view/box as opposed to margin -->
 
         <View
