@@ -2,23 +2,35 @@ package com.compscieddy.reading_logger.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.compscieddy.reading_logger.Constants;
+import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.R;
-import com.compscieddy.reading_logger.Util;
+import com.compscieddy.reading_logger.Utils;
+import com.compscieddy.reading_logger.model.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class AuthenticationActivity extends AppCompatActivity {
+public class AuthenticationActivity extends BaseActivity {
 
   private static final String TAG = AuthenticationActivity.class.getSimpleName();
 
@@ -39,8 +51,9 @@ public class AuthenticationActivity extends AppCompatActivity {
       startActivity(intent);
     }
 
+    // pre-fill cause no need to make my sad #stillsingle existential-crisis-laden life harder than it already is
     mEmailInput.setText("test@test.com");
-    mPasswordInput.setText("password"); // pre-fill cause no need to make my sad #stillsingle existential-crisis-laden life harder than it already is
+    mPasswordInput.setText("password");
 
     mAuthenticationButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -61,7 +74,7 @@ public class AuthenticationActivity extends AppCompatActivity {
               switch (exceptionCode) {
                 case ParseException.USERNAME_TAKEN:
                   Log.e(TAG, "Username/email exists but the password must be wrong", e);
-                  Util.showToast(AuthenticationActivity.this, "Email was recognized, but wrong password. Try again.");
+                  Utils.showToast(AuthenticationActivity.this, "Email was recognized, but wrong password. Try again.");
                   break;
                 case ParseException.OBJECT_NOT_FOUND:
                 case ParseException.EMAIL_NOT_FOUND:
@@ -78,6 +91,85 @@ public class AuthenticationActivity extends AppCompatActivity {
       }
     });
 
+    mAuthenticationButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        final String email = mEmailInput.getText().toString();
+        final String password = mPasswordInput.getText().toString();
+        if (!Utils.isEmailValid(email)) {
+          // todo: special handling for invalid email address
+        }
+        FirebaseInfo.ref.createUser(
+            email,
+            password,
+            new Firebase.ValueResultHandler<Map<String, Object>>() {
+              @Override
+              public void onSuccess(Map<String, Object> result) {
+                Utils.showToast(AuthenticationActivity.this, "Hi " + email + "! :)");
+
+                final String encodedEmail = Utils.encodeEmail(email);
+
+                HashMap<String, Object> timestampJoined = new HashMap<>();
+                timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+                User newUser = new User(email, timestampJoined);
+                HashMap<String, Object> newUserMap = (HashMap<String, Object>) new ObjectMapper().convertValue(newUser, Map.class);
+
+                HashMap<String, Object> userAndUidMapping = new HashMap<>();
+                userAndUidMapping.put("/" + Constants.FIREBASE_LOCATION_USERS + "/" + encodedEmail,
+                    newUserMap);
+
+                final String authUserId = (String) result.get("uid");
+                userAndUidMapping.put("/" + Constants.FIREBASE_LOCATION_UID_MAPPINGS + "/" + authUserId,
+                    encodedEmail);
+
+                FirebaseInfo.ref.updateChildren(userAndUidMapping, new Firebase.CompletionListener() {
+                  @Override
+                  public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                  }
+                });
+              }
+
+              @Override
+              public void onError(FirebaseError firebaseError) {
+                if (firebaseError.getCode() == FirebaseError.EMAIL_TAKEN) {
+                  loginUser(email, password);
+                } else {
+                  Log.e(TAG, "firebaseError: " + firebaseError);
+                }
+              }
+            }
+        );
+      }
+    });
+
+  }
+
+  private void loginUser(final String email, String password) {
+    FirebaseInfo.ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
+      @Override
+      public void onAuthenticated(AuthData authData) {
+        String encodedEmail = Utils.encodeEmail(email);
+        Firebase userRef = new Firebase(Constants.FIREBASE_URL_USERS).child(encodedEmail);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+          @Override
+          public void onDataChange(DataSnapshot dataSnapshot) {
+            Log.d(TAG, "Logged in to email:" + email);
+            User user = dataSnapshot.getValue(User.class);
+            Log.d(TAG, "user:" + user);
+          }
+          @Override
+          public void onCancelled(FirebaseError firebaseError) {
+
+          }
+        });
+
+      }
+      @Override
+      public void onAuthenticationError(FirebaseError firebaseError) {
+
+      }
+    });
   }
 
   private void signupUser(String email, String password) {
@@ -97,7 +189,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         } else {
           int exceptionCode = e.getCode();
           Log.e(TAG, "ParseException while signing up in (exception code: " + exceptionCode + ")", e);
-          Util.showToast(AuthenticationActivity.this, "Signup failed. Try again."); // TODO: be more descriptive :)
+          Utils.showToast(AuthenticationActivity.this, "Signup failed. Try again."); // TODO: be more descriptive :)
         }
       }
 

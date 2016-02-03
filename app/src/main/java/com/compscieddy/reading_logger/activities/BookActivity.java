@@ -3,15 +3,14 @@ package com.compscieddy.reading_logger.activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.compscieddy.reading_logger.R;
-import com.compscieddy.reading_logger.Util;
-import com.compscieddy.reading_logger.models.Book;
+import com.compscieddy.reading_logger.Utils;
+import com.compscieddy.reading_logger.model.ParseBook;
 import com.db.chart.model.LineSet;
 import com.db.chart.view.LineChartView;
 import com.github.mikephil.charting.charts.LineChart;
@@ -22,7 +21,7 @@ import com.parse.ParseQuery;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class BookActivity extends AppCompatActivity {
+public class BookActivity extends BaseActivity {
 
   private static final String TAG = BookActivity.class.getSimpleName();
 
@@ -53,13 +52,13 @@ public class BookActivity extends AppCompatActivity {
 
     Bundle extras = getIntent().getExtras();
     if (extras != null) {
-      String bookId = extras.getString(Book.BOOK_ID_EXTRA);
-      ParseQuery<Book> query = Book.getQuery();
-      query.getInBackground(bookId, new GetCallback<Book>() {
+      String bookId = extras.getString(ParseBook.BOOK_ID_EXTRA);
+      ParseQuery<ParseBook> query = ParseBook.getQuery();
+      query.getInBackground(bookId, new GetCallback<ParseBook>() {
         @Override
-        public void done(Book book, ParseException e) {
+        public void done(ParseBook book, ParseException e) {
           if (e != null) {
-            Log.e(TAG, "Error getting Book object", e);
+            Log.e(TAG, "Error getting ParseBook object", e);
             return;
           }
           if (book == null) return;
@@ -99,7 +98,7 @@ public class BookActivity extends AppCompatActivity {
         1, 5, 20,
     });
     dataSet.setDotsColor(getResources().getColor(R.color.flatui_blue_1));
-    dataSet.setThickness(Util.dpToPx(2));
+    dataSet.setThickness(Utils.dpToPx(2));
     dataSet.setColor(getResources().getColor(R.color.flatui_blue_2));
     dataSet.setFill(getResources().getColor(R.color.flatui_blue_1_transp_50));
 

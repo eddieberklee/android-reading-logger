@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.compscieddy.reading_logger.activities.ScrollingActivity;
-import com.compscieddy.reading_logger.models.Book;
-import com.compscieddy.reading_logger.models.PageLog;
+import com.compscieddy.reading_logger.model.ParseBook;
+import com.compscieddy.reading_logger.model.ParsePageLog;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -30,7 +30,7 @@ public class PageLogInputFragment extends DialogFragment {
   private static final String TAG = PageLogInputFragment.class.getSimpleName();
 
   public static final String PAGE_NUMBER_DIALOG = "page_number_dialog";
-  private Book mBook;
+  private ParseBook mBook;
   private View mRootView;
 
   @Bind(R.id.number_button_1) View mNumberButton1;
@@ -102,14 +102,14 @@ public class PageLogInputFragment extends DialogFragment {
     ButterKnife.bind(this, mRootView);
 
     Bundle args = getArguments();
-    String bookId = args.getString(Book.BOOK_ID_EXTRA);
+    String bookId = args.getString(ParseBook.BOOK_ID_EXTRA);
 
-    ParseQuery<Book> query = Book.getQuery();
-    query.getInBackground(bookId, new GetCallback<Book>() {
+    ParseQuery<ParseBook> query = ParseBook.getQuery();
+    query.getInBackground(bookId, new GetCallback<ParseBook>() {
       @Override
-      public void done(Book book, ParseException e) {
+      public void done(ParseBook book, ParseException e) {
         if (e != null) {
-          Log.e(TAG, "Error getting Book object", e);
+          Log.e(TAG, "Error getting ParseBook object", e);
           return;
         }
         if (book == null) return;
@@ -119,10 +119,10 @@ public class PageLogInputFragment extends DialogFragment {
       }
     });
 
-    Util.applyColorFilter(mCheckButton.getDrawable(), getResources().getColor(android.R.color.white));
-    Util.applyColorFilter(mCheckButton.getBackground(), getResources().getColor(R.color.flatui_green_1));
-    Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
-    Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
+    Utils.applyColorFilter(mCheckButton.getDrawable(), getResources().getColor(android.R.color.white));
+    Utils.applyColorFilter(mCheckButton.getBackground(), getResources().getColor(R.color.flatui_green_1));
+    Utils.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
+    Utils.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
 
     setListeners();
 
@@ -150,10 +150,10 @@ public class PageLogInputFragment extends DialogFragment {
     mCheckButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        PageLog pageLog = new PageLog();
+        ParsePageLog pageLog = new ParsePageLog();
         Log.d(TAG, "Setting page number to this: " + Integer.parseInt(mPageNumberInput.getText().toString()));
         pageLog.setPageNum(Integer.parseInt(mPageNumberInput.getText().toString()));
-        pageLog.put(Book.class.getSimpleName(), mBook);
+        pageLog.put(ParseBook.class.getSimpleName(), mBook);
         pageLog.saveInBackground(); // todo should add a callback and show progressbar - or maybe something else if user shouldn't be kept waiting
         ((ScrollingActivity) getActivity()).refreshBooksList();
         getDialog().dismiss();

@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.compscieddy.reading_logger.activities.ScrollingActivity;
-import com.compscieddy.reading_logger.models.Book;
+import com.compscieddy.reading_logger.model.ParseBook;
 import com.parse.ParseObject;
 
 import butterknife.Bind;
@@ -25,7 +25,7 @@ public class BookInputFragment extends DialogFragment {
 
   public final static String BOOK_DIALOG = "book_dialog";
 
-  public final static String TABLE_BOOK = "Book";
+  public final static String TABLE_BOOK = "ParseBook";
   public final static String KEY_TITLE = "title";
 
   private View mRootView;
@@ -46,8 +46,8 @@ public class BookInputFragment extends DialogFragment {
     mRootView = inflater.inflate(R.layout.fragment_book_input, null);
     ButterKnife.bind(this, mRootView);
 
-    Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
-    Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(R.color.white));
+    Utils.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
+    Utils.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(R.color.white));
 
     return mRootView;
   }
@@ -61,9 +61,9 @@ public class BookInputFragment extends DialogFragment {
   public void addBook() {
     String title = mBookTitleInput.getText().toString();
     if (TextUtils.isEmpty(title)) {
-      Util.showToast(getActivity(), "Please enter a title...");
+      Utils.showToast(getActivity(), "Please enter a title...");
     } else {
-      ParseObject book = new Book();
+      ParseObject book = new ParseBook();
       book.put(KEY_TITLE, title);
       book.saveInBackground();
 

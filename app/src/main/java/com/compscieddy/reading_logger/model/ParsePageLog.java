@@ -1,4 +1,4 @@
-package com.compscieddy.reading_logger.models;
+package com.compscieddy.reading_logger.model;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
@@ -7,8 +7,8 @@ import com.parse.ParseQuery;
 /**
  * Created by elee on 1/12/16.
  */
-@ParseClassName("PageLog")
-public class PageLog extends ParseObject {
+@ParseClassName("ParsePageLog")
+public class ParsePageLog extends ParseObject {
 
   private static final String PAGE_NUM = "page_num";
   // .getUpdatedAt() and .getCreatedAt()
@@ -21,8 +21,8 @@ public class PageLog extends ParseObject {
     put(PAGE_NUM, pageNum);
   }
 
-  public static ParseQuery<PageLog> getQuery() {
-    return ParseQuery.getQuery(PageLog.class);
+  public static ParseQuery<ParsePageLog> getQuery() {
+    return ParseQuery.getQuery(ParsePageLog.class);
   }
 
 }

@@ -5,7 +5,6 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -15,9 +14,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.compscieddy.reading_logger.BookInputFragment;
+import com.compscieddy.reading_logger.Constants;
 import com.compscieddy.reading_logger.R;
+import com.compscieddy.reading_logger.Utils;
 import com.compscieddy.reading_logger.adapter.BooksArrayAdapter;
-import com.compscieddy.reading_logger.models.Book;
+import com.compscieddy.reading_logger.model.Book;
+import com.compscieddy.reading_logger.model.ParseBook;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.parse.FindCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
@@ -26,13 +32,13 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScrollingActivity extends AppCompatActivity {
+public class ScrollingActivity extends BaseActivity {
 
   private static final String TAG = ScrollingActivity.class.getSimpleName();
 
   ListView mBooksListView;
   BooksArrayAdapter mBooksAdapter;
-  List<Book> mBooksList;
+  List<ParseBook> mBooksList;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,23 @@ public class ScrollingActivity extends AppCompatActivity {
     setContentView(R.layout.activity_scrolling);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    Firebase ref = new Firebase(Constants.FIREBASE_URL);
+    Book newBook = new Book("anonymousOwner", "Book Title");
+    ref.child("books").setValue(newBook);
+
+    ref.child("books").addValueEventListener(new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        Book book = dataSnapshot.getValue(Book.class);
+        Utils.showToast(ScrollingActivity.this, book.getTitle());
+      }
+
+      @Override
+      public void onCancelled(FirebaseError firebaseError) {
+
+      }
+    });
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
@@ -60,9 +83,9 @@ public class ScrollingActivity extends AppCompatActivity {
     init();
 
     mBooksList = new ArrayList<>();
-    Book.getQuery().findInBackground(new FindCallback<Book>() {
+    ParseBook.getQuery().findInBackground(new FindCallback<ParseBook>() {
       @Override
-      public void done(List<Book> objects, ParseException e) {
+      public void done(List<ParseBook> objects, ParseException e) {
         if (e == null) {
           mBooksList = new ArrayList<>(objects);
           mBooksAdapter = new BooksArrayAdapter(ScrollingActivity.this, mBooksList);
@@ -77,9 +100,9 @@ public class ScrollingActivity extends AppCompatActivity {
   }
 
   public void refreshBooksList() {
-    Book.getQuery().findInBackground(new FindCallback<Book>() {
+    ParseBook.getQuery().findInBackground(new FindCallback<ParseBook>() {
       @Override
-      public void done(List<Book> objects, ParseException e) {
+      public void done(List<ParseBook> objects, ParseException e) {
         if (e == null) {
           mBooksList = new ArrayList<>(objects);
           mBooksAdapter = new BooksArrayAdapter(ScrollingActivity.this, mBooksList);
@@ -95,9 +118,9 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
       if (mBooksList.size() > 0) {
-        Book book = mBooksList.get(position);
+        ParseBook book = mBooksList.get(position);
         Intent intent = new Intent(ScrollingActivity.this, BookActivity.class);
-        intent.putExtra(Book.BOOK_ID_EXTRA, book.getObjectId());
+        intent.putExtra(ParseBook.BOOK_ID_EXTRA, book.getObjectId());
         startActivity(intent);
       }
 

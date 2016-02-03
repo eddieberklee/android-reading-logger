@@ -14,7 +14,7 @@ import android.widget.Toast;
 /**
  * Created by elee on 12/3/15.
  */
-public class Util {
+public class Utils {
   public static void applyColorFilter(Drawable drawable, int color) {
     applyColorFilter(drawable, color, false);
   }
@@ -151,6 +151,18 @@ public class Util {
     copyRect.bottom -= amount;
     copyRect.right -= amount;
     return copyRect;
+  }
+
+  public static boolean isEmailValid(String email) {
+    return (email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches());
+  }
+
+  public static boolean isUserNameValid(String userName) {
+    return !(userName.equals(""));
+  }
+
+  public static String encodeEmail(String userEmail) {
+    return userEmail.replace(".", ",");
   }
 
 }

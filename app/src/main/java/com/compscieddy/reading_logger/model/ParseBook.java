@@ -1,4 +1,4 @@
-package com.compscieddy.reading_logger.models;
+package com.compscieddy.reading_logger.model;
 
 import android.util.Log;
 import android.widget.EditText;
@@ -17,10 +17,10 @@ import java.util.List;
 /**
  * Created by elee on 12/3/15.
  */
-@ParseClassName("Book")
-public class Book extends ParseObject implements Serializable {
+@ParseClassName("ParseBook")
+public class ParseBook extends ParseObject implements Serializable {
 
-  private static final String TAG = Book.class.getSimpleName();
+  private static final String TAG = ParseBook.class.getSimpleName();
 
   public static final String BOOK_ID_EXTRA = "book_id_extra"; // instead of passing ParseObject, just pass the id since Parse says they cache the object anyway
   private static final String TITLE = "title";
@@ -31,14 +31,14 @@ public class Book extends ParseObject implements Serializable {
 
   public int dayStartedReading; // represented as DD+MM+YYYY maybe
   public int dayFinishedReading;
-  public ArrayList<ReadingSession> readingSessionHistory;
+  public ArrayList<ParseReadingSession> readingSessionHistory;
 
-  public Book() {
+  public ParseBook() {
     super();
   }
 
-  public Book(String title, int currentPageNum, int dayStartedReading, int dayFinishedReading,
-              ArrayList<ReadingSession> readingSessionHistory) {
+  public ParseBook(String title, int currentPageNum, int dayStartedReading, int dayFinishedReading,
+                   ArrayList<ParseReadingSession> readingSessionHistory) {
     super();
     this.currentPageNum = currentPageNum;
     this.dayStartedReading = dayStartedReading;
@@ -52,18 +52,18 @@ public class Book extends ParseObject implements Serializable {
   public void setMaxPageNum(int maxPageNum) { put(MAX_PAGE_NUM, maxPageNum); }
 
   public ParseQuery getCurrentPageNumQuery() {
-    ParseQuery<PageLog> query = PageLog.getQuery();
-    query.whereEqualTo(Book.class.getSimpleName(), this);
+    ParseQuery<ParsePageLog> query = ParsePageLog.getQuery();
+    query.whereEqualTo(ParseBook.class.getSimpleName(), this);
     query.orderByDescending("createdAt");
     query.setLimit(1); // most recent
     return query;
   }
 
   public void setTextViewCurrentPageNumToView(final TextView view) {
-    ParseQuery<PageLog> query = getCurrentPageNumQuery();
-    query.findInBackground(new FindCallback<PageLog>() {
+    ParseQuery<ParsePageLog> query = getCurrentPageNumQuery();
+    query.findInBackground(new FindCallback<ParsePageLog>() {
       @Override
-      public void done(List<PageLog> objects, ParseException e) {
+      public void done(List<ParsePageLog> objects, ParseException e) {
         if (e != null) {
           Log.e(TAG, "Error getting current page number", e);
           return;
@@ -78,10 +78,10 @@ public class Book extends ParseObject implements Serializable {
   }
 
   public void setEditTextCurrentPageNumToView(final EditText view) {
-    ParseQuery<PageLog> query = getCurrentPageNumQuery();
-    query.findInBackground(new FindCallback<PageLog>() {
+    ParseQuery<ParsePageLog> query = getCurrentPageNumQuery();
+    query.findInBackground(new FindCallback<ParsePageLog>() {
       @Override
-      public void done(List<PageLog> objects, ParseException e) {
+      public void done(List<ParsePageLog> objects, ParseException e) {
         if (e != null) {
           Log.e(TAG, "Error getting current page number", e);
           return;
@@ -97,6 +97,6 @@ public class Book extends ParseObject implements Serializable {
     });
   }
 
-  public static ParseQuery<Book> getQuery() { return ParseQuery.getQuery(Book.class); }
+  public static ParseQuery<ParseBook> getQuery() { return ParseQuery.getQuery(ParseBook.class); }
 
 }

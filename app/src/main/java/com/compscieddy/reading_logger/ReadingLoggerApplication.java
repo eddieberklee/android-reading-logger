@@ -2,9 +2,10 @@ package com.compscieddy.reading_logger;
 
 import android.app.Application;
 
-import com.compscieddy.reading_logger.models.Book;
-import com.compscieddy.reading_logger.models.PageLog;
+import com.compscieddy.reading_logger.model.ParseBook;
+import com.compscieddy.reading_logger.model.ParsePageLog;
 import com.firebase.client.Firebase;
+import com.firebase.client.Logger;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -18,13 +19,14 @@ public class ReadingLoggerApplication extends Application {
   public void onCreate() {
     super.onCreate();
 
-    ParseObject.registerSubclass(Book.class);
-    ParseObject.registerSubclass(PageLog.class);
+    ParseObject.registerSubclass(ParseBook.class);
+    ParseObject.registerSubclass(ParsePageLog.class);
 
     Parse.enableLocalDatastore(this);
     Parse.initialize(this);
     ParseInstallation.getCurrentInstallation().saveInBackground();
 
     Firebase.setAndroidContext(this);
+    Firebase.getDefaultConfig().setLogLevel(Logger.Level.DEBUG);
   }
 }
