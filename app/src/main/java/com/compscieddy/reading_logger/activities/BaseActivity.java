@@ -30,11 +30,15 @@ public class BaseActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
 
     if (FirebaseInfo.ref.getAuth() == null) { // user not logged in
-      Intent intent = new Intent(BaseActivity.this, AuthenticationActivity.class);
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-      startActivity(intent);
+      Log.d(TAG, "User not logged in");
+      if (!(this instanceof AuthenticationActivity)) {
+        Intent intent = new Intent(BaseActivity.this, AuthenticationActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+      }
     } else {
       mEncodedEmail = Utils.encodeEmail((String) FirebaseInfo.ref.getAuth().getProviderData().get("email"));
+      Log.d(TAG, "User logged in as " + mEncodedEmail);
     }
 
     mAuthListener = new Firebase.AuthStateListener() {

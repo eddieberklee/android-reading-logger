@@ -19,6 +19,7 @@ import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.Utils;
 import com.compscieddy.reading_logger.model.Book;
 import com.compscieddy.reading_logger.model.PageLog;
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
@@ -61,18 +62,37 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
       @Override
       public void onClick(View v) {
         // todo Delete Page Logs associated with this book first
-        FirebaseInfo.booksRef.child(book.getKey()).child(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS).addListenerForSingleValueEvent(new ValueEventListener() {
-          @Override
-          public void onDataChange(DataSnapshot dataSnapshot) {
+        FirebaseInfo.booksRef.child(book.getKey()).child(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS)
+            .addChildEventListener(new ChildEventListener() {
+              @Override
+              public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-          }
+              }
 
-          @Override
-          public void onCancelled(FirebaseError firebaseError) {
+              @Override
+              public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-          }
-        });
+              }
+
+              @Override
+              public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+              }
+
+              @Override
+              public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+              }
+
+              @Override
+              public void onCancelled(FirebaseError firebaseError) {
+
+              }
+            });
+
+        // Delete book
         FirebaseInfo.booksRef.child(book.getKey()).removeValue();
+
         finalConvertView.animate()
             .translationX(-finalConvertView.getWidth())
             .alpha(0.3f)

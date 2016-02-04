@@ -119,7 +119,14 @@ public class PageLogInputFragment extends DialogFragment {
       public void onDataChange(DataSnapshot dataSnapshot) {
         if (dataSnapshot.getValue() != null) {
           PageLog pageLog = dataSnapshot.getValue(PageLog.class);
-          mPageNumberInput.setText(pageLog.getPageNumber());
+          if (pageLog == null) {
+            // no pre-existing page log for this book
+            Log.e(TAG, "No pre-existing page log for this book");
+            return;
+          }
+          String pageNumber = String.valueOf(pageLog.getPageNumber());
+          mPageNumberInput.setText(pageNumber);
+          mPageNumberInput.setSelection(pageNumber.length());
         }
       }
 

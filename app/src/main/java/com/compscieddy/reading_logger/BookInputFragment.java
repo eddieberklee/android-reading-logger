@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import butterknife.OnClick;
  * Created by elee on 1/10/16.
  */
 public class BookInputFragment extends DialogFragment {
+
+  private static final String TAG = BookInputFragment.class.getSimpleName();
 
   public final static String BOOK_DIALOG = "book_dialog";
 
@@ -76,10 +79,11 @@ public class BookInputFragment extends DialogFragment {
     if (TextUtils.isEmpty(title)) {
       Utils.showToast(getActivity(), "Please enter a title...");
     } else {
-      Firebase userBooksRef = new Firebase(Constants.FIREBASE_URL_BOOKS);
+      Firebase booksRef = new Firebase(Constants.FIREBASE_URL_BOOKS);
 
-      Firebase newBookRef = userBooksRef.push();
+      Firebase newBookRef = booksRef.push();
       String newBookKey = newBookRef.getKey();
+      Log.d(TAG, " newBookKey: " + newBookKey);
 
       Book book = new Book(newBookKey, mEncodedEmail, title);
       HashMap<String, Object> bookMap = (HashMap<String, Object>) new ObjectMapper().convertValue(book, Map.class);
