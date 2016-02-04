@@ -65,7 +65,7 @@ public class BaseActivity extends AppCompatActivity {
       public void onAuthenticated(AuthData authData) {
         Log.e(TAG, "Authenticated");
 
-        Intent intent = new Intent(BaseActivity.this, ScrollingActivity.class);
+        Intent intent = new Intent(BaseActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
       }

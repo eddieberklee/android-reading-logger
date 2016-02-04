@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.compscieddy.reading_logger.Constants;
 import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.PageLogInputFragment;
 import com.compscieddy.reading_logger.R;
@@ -59,6 +60,18 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
     deleteButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
+        // todo Delete Page Logs associated with this book first
+        FirebaseInfo.booksRef.child(book.getKey()).child(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS).addListenerForSingleValueEvent(new ValueEventListener() {
+          @Override
+          public void onDataChange(DataSnapshot dataSnapshot) {
+
+          }
+
+          @Override
+          public void onCancelled(FirebaseError firebaseError) {
+
+          }
+        });
         FirebaseInfo.booksRef.child(book.getKey()).removeValue();
         finalConvertView.animate()
             .translationX(-finalConvertView.getWidth())

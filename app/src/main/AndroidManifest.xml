@@ -20,7 +20,7 @@
             android:value="@string/parse_client_key"/>
 
         <activity
-            android:name=".activities.ScrollingActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

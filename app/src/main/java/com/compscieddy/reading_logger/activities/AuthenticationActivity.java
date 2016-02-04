@@ -48,7 +48,7 @@ public class AuthenticationActivity extends BaseActivity {
     ButterKnife.bind(this);
 
     if (FirebaseInfo.ref.getAuth() != null) { // already logged in
-      Intent intent = new Intent(AuthenticationActivity.this, ScrollingActivity.class);
+      Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
       startActivity(intent);
     }
@@ -68,7 +68,7 @@ public class AuthenticationActivity extends BaseActivity {
           public void done(ParseUser user, ParseException e) {
             mProgressBar.setVisibility(View.INVISIBLE);
             if (e == null) {
-              Intent intent = new Intent(AuthenticationActivity.this, ScrollingActivity.class);
+              Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
               intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
               startActivity(intent);
             } else {
@@ -132,7 +132,7 @@ public class AuthenticationActivity extends BaseActivity {
                   }
                 });
 
-                Intent intent = new Intent(AuthenticationActivity.this, ScrollingActivity.class);
+                Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
               }
@@ -174,7 +174,7 @@ public class AuthenticationActivity extends BaseActivity {
             User user = dataSnapshot.getValue(User.class);
             Log.d(TAG, "user:" + user);
 
-            Intent intent = new Intent(AuthenticationActivity.this, ScrollingActivity.class);
+            Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
           }
@@ -203,7 +203,7 @@ public class AuthenticationActivity extends BaseActivity {
       public void done(ParseException e) {
         mProgressBar.setVisibility(View.INVISIBLE);
         if (e == null) {
-          Intent intent = new Intent(AuthenticationActivity.this, ScrollingActivity.class);
+          Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
           startActivity(intent);
         } else {

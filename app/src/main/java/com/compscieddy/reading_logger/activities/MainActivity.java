@@ -26,9 +26,9 @@ import com.firebase.client.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScrollingActivity extends BaseActivity {
+public class MainActivity extends BaseActivity {
 
-  private static final String TAG = ScrollingActivity.class.getSimpleName();
+  private static final String TAG = MainActivity.class.getSimpleName();
 
   ListView mBooksListView;
   BooksArrayAdapter mBooksAdapter;
@@ -60,7 +60,7 @@ public class ScrollingActivity extends BaseActivity {
     init();
 
     mBooksList = new ArrayList<>();
-    mBooksAdapter = new BooksArrayAdapter(ScrollingActivity.this, mBooksList);
+    mBooksAdapter = new BooksArrayAdapter(MainActivity.this, mBooksList);
     mBooksListView.setAdapter(mBooksAdapter);
 
     FirebaseInfo.userBooksMappingsRef.addChildEventListener(new ChildEventListener() {
@@ -115,7 +115,7 @@ public class ScrollingActivity extends BaseActivity {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
       if (mBooksList.size() > 0) {
         Book book = mBooksList.get(position);
-        Intent intent = new Intent(ScrollingActivity.this, BookActivity.class);
+        Intent intent = new Intent(MainActivity.this, BookActivity.class);
         intent.putExtra(Book.BOOK_KEY_EXTRA, book.getKey());
         startActivity(intent);
       }
