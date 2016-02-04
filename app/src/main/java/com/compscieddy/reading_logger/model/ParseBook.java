@@ -22,7 +22,6 @@ public class ParseBook extends ParseObject implements Serializable {
 
   private static final String TAG = ParseBook.class.getSimpleName();
 
-  public static final String BOOK_ID_EXTRA = "book_id_extra"; // instead of passing ParseObject, just pass the id since Parse says they cache the object anyway
   private static final String TITLE = "title";
   private static final String MAX_PAGE_NUM = "max_page_num";
 

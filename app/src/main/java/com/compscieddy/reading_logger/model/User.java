@@ -1,10 +1,15 @@
 package com.compscieddy.reading_logger.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.HashMap;
 
 /**
  * Created by elee on 2/2/16.
  */
+@JsonIgnoreProperties({
+    "bookMappings"
+})
 public class User {
 
   private String email;

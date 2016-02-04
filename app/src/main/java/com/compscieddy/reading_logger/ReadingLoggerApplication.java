@@ -5,7 +5,6 @@ import android.app.Application;
 import com.compscieddy.reading_logger.model.ParseBook;
 import com.compscieddy.reading_logger.model.ParsePageLog;
 import com.firebase.client.Firebase;
-import com.firebase.client.Logger;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -27,6 +26,6 @@ public class ReadingLoggerApplication extends Application {
     ParseInstallation.getCurrentInstallation().saveInBackground();
 
     Firebase.setAndroidContext(this);
-    Firebase.getDefaultConfig().setLogLevel(Logger.Level.DEBUG);
+//    Firebase.getDefaultConfig().setLogLevel(Logger.Level.DEBUG);
   }
 }

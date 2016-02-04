@@ -12,28 +12,29 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.PageLogInputFragment;
 import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.Utils;
-import com.compscieddy.reading_logger.model.ParseBook;
-import com.compscieddy.reading_logger.model.ParsePageLog;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
+import com.compscieddy.reading_logger.model.Book;
+import com.compscieddy.reading_logger.model.PageLog;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.List;
 
 /**
  * Created by elee on 12/3/15.
  */
-public class BooksArrayAdapter extends ArrayAdapter<ParseBook> {
+public class BooksArrayAdapter extends ArrayAdapter<Book> {
 
   private static final String TAG = BooksArrayAdapter.class.getSimpleName();
 
   Activity mActivity; // Activity cause I need the .getFragmentManager()
-  List<ParseBook> mBooksList;
+  List<Book> mBooksList;
 
-  public BooksArrayAdapter(Activity activity, List<ParseBook> objects) {
+  public BooksArrayAdapter(Activity activity, List<Book> objects) {
     super(activity, 0, objects);
     mActivity = activity;
     mBooksList = objects;
@@ -44,7 +45,7 @@ public class BooksArrayAdapter extends ArrayAdapter<ParseBook> {
     if (convertView == null) {
       convertView = LayoutInflater.from(mActivity).inflate(R.layout.item_books, parent, false);
     }
-    final ParseBook book = mBooksList.get(position);
+    final Book book = mBooksList.get(position);
 
     TextView bookTitleView = (TextView) convertView.findViewById(R.id.item_book_title);
     final TextView currentPageNumView = (TextView) convertView.findViewById(R.id.item_current_page_number);
@@ -58,7 +59,7 @@ public class BooksArrayAdapter extends ArrayAdapter<ParseBook> {
     deleteButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        book.deleteInBackground();
+        FirebaseInfo.booksRef.child(book.getKey()).removeValue();
         finalConvertView.animate()
             .translationX(-finalConvertView.getWidth())
             .alpha(0.3f)
@@ -68,7 +69,7 @@ public class BooksArrayAdapter extends ArrayAdapter<ParseBook> {
                 finalConvertView.setTranslationX(0); // reset for future rows; be a good citizen
                 finalConvertView.setAlpha(1.0f);
                 mBooksList.remove(position);
-                notifyDataSetChanged();;
+                notifyDataSetChanged();
               }
             });
       }
@@ -88,7 +89,7 @@ public class BooksArrayAdapter extends ArrayAdapter<ParseBook> {
 
         PageLogInputFragment pageLogInputFragment = new PageLogInputFragment();
         Bundle args = new Bundle();
-        args.putString(ParseBook.BOOK_ID_EXTRA, book.getObjectId());
+        args.putString(Book.BOOK_KEY_EXTRA, book.getKey());
         pageLogInputFragment.setArguments(args);
         pageLogInputFragment.show(fragmentTransaction, PageLogInputFragment.PAGE_NUMBER_DIALOG);
       }
@@ -96,27 +97,24 @@ public class BooksArrayAdapter extends ArrayAdapter<ParseBook> {
 
     bookTitleView.setText(book.getTitle());
 
-    ParseQuery currentPageNumQuery = book.getCurrentPageNumQuery();
-    currentPageNumQuery.findInBackground(new FindCallback<ParsePageLog>() {
+    book.addCurrentPageNumberListener(book.getKey(), new ValueEventListener() {
       @Override
-      public void done(List<ParsePageLog> objects, ParseException e) {
-        if (e == null) {
-          if (objects != null && objects.size() > 0) {
-            int currentPageNum = (objects.get(0)).getPageNum();
-            currentPageNumView.setText(String.valueOf(currentPageNum));
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        if (dataSnapshot.getValue() != null) {
+          PageLog pageLog = dataSnapshot.getValue(PageLog.class);
+          currentPageNumView.setText(String.valueOf(pageLog.getPageNumber()));
 
-            currentPageNumView.setVisibility(View.VISIBLE);
-            currentPageLabel.setVisibility(View.VISIBLE);
-            emptyPageLabel.setVisibility(View.GONE);
-          } else {
-            // todo: is no current page number - handle this some other way than just not populating or populating with 0
-            currentPageNumView.setVisibility(View.GONE);
-            currentPageLabel.setVisibility(View.GONE);
-            emptyPageLabel.setVisibility(View.VISIBLE);
-          }
+          currentPageNumView.setVisibility(View.VISIBLE);
+          currentPageLabel.setVisibility(View.VISIBLE);
+          emptyPageLabel.setVisibility(View.GONE);
         } else {
-          Log.e(TAG, "Error getting current page number", e);
+          Log.e(TAG, "dataSnapshot . getValue() is null");
         }
+      }
+
+      @Override
+      public void onCancelled(FirebaseError firebaseError) {
+        Log.e(TAG, "onCancelled inner firebaseError:" + firebaseError);
       }
     });
 

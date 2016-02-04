@@ -1,7 +1,9 @@
 package com.compscieddy.reading_logger.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -45,7 +47,7 @@ public class AuthenticationActivity extends BaseActivity {
     setContentView(R.layout.activity_authentication);
     ButterKnife.bind(this);
 
-    if (ParseUser.getCurrentUser() != null) {
+    if (FirebaseInfo.ref.getAuth() != null) { // already logged in
       Intent intent = new Intent(AuthenticationActivity.this, ScrollingActivity.class);
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
       startActivity(intent);
@@ -99,6 +101,7 @@ public class AuthenticationActivity extends BaseActivity {
         if (!Utils.isEmailValid(email)) {
           // todo: special handling for invalid email address
         }
+
         FirebaseInfo.ref.createUser(
             email,
             password,
@@ -112,7 +115,7 @@ public class AuthenticationActivity extends BaseActivity {
                 HashMap<String, Object> timestampJoined = new HashMap<>();
                 timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
-                User newUser = new User(email, timestampJoined);
+                User newUser = new User(encodedEmail, timestampJoined);
                 HashMap<String, Object> newUserMap = (HashMap<String, Object>) new ObjectMapper().convertValue(newUser, Map.class);
 
                 HashMap<String, Object> userAndUidMapping = new HashMap<>();
@@ -128,11 +131,16 @@ public class AuthenticationActivity extends BaseActivity {
                   public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                   }
                 });
+
+                Intent intent = new Intent(AuthenticationActivity.this, ScrollingActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
               }
 
               @Override
               public void onError(FirebaseError firebaseError) {
                 if (firebaseError.getCode() == FirebaseError.EMAIL_TAKEN) {
+                  Utils.showToast(AuthenticationActivity.this, "Email already exists - trying to log you in instead");
                   loginUser(email, password);
                 } else {
                   Log.e(TAG, "firebaseError: " + firebaseError);
@@ -140,6 +148,8 @@ public class AuthenticationActivity extends BaseActivity {
               }
             }
         );
+
+        loginUser(email, password);
       }
     });
 
@@ -148,8 +158,14 @@ public class AuthenticationActivity extends BaseActivity {
   private void loginUser(final String email, String password) {
     FirebaseInfo.ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
       @Override
-      public void onAuthenticated(AuthData authData) {
+      public void onAuthenticated(final AuthData authData) {
         String encodedEmail = Utils.encodeEmail(email);
+
+        if (authData != null) {
+          SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AuthenticationActivity.this);
+          sp.edit().putString(Constants.KEY_ENCODED_EMAIL, encodedEmail).apply();
+        }
+
         Firebase userRef = new Firebase(Constants.FIREBASE_URL_USERS).child(encodedEmail);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
           @Override
@@ -157,6 +173,10 @@ public class AuthenticationActivity extends BaseActivity {
             Log.d(TAG, "Logged in to email:" + email);
             User user = dataSnapshot.getValue(User.class);
             Log.d(TAG, "user:" + user);
+
+            Intent intent = new Intent(AuthenticationActivity.this, ScrollingActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
           }
           @Override
           public void onCancelled(FirebaseError firebaseError) {

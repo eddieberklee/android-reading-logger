@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.Utils;
+import com.compscieddy.reading_logger.model.Book;
 import com.compscieddy.reading_logger.model.ParseBook;
 import com.db.chart.model.LineSet;
 import com.db.chart.view.LineChartView;
@@ -52,7 +53,7 @@ public class BookActivity extends BaseActivity {
 
     Bundle extras = getIntent().getExtras();
     if (extras != null) {
-      String bookId = extras.getString(ParseBook.BOOK_ID_EXTRA);
+      String bookId = extras.getString(Book.BOOK_KEY_EXTRA);
       ParseQuery<ParseBook> query = ParseBook.getQuery();
       query.getInBackground(bookId, new GetCallback<ParseBook>() {
         @Override

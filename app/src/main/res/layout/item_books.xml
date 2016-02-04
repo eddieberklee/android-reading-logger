@@ -28,7 +28,8 @@
             android:gravity="center_vertical"
             android:textAllCaps="true"
             android:textSize="8sp"
-            android:text="Current Page:"/>
+            android:text="Current Page:"
+            android:visibility="gone"/>
         <TextView
             android:id="@+id/item_current_page_number"
             android:layout_width="wrap_content"
@@ -37,7 +38,8 @@
             android:layout_alignBaseline="@+id/current_page_label"
             android:layout_marginLeft="3dp"
             android:textSize="10sp"
-            tools:text="44"/>
+            tools:text="44"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <View
@@ -52,7 +54,7 @@
         android:gravity="center_vertical"
         android:textSize="10sp"
         android:text="Start Reading!"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <ImageView
         android:id="@+id/delete_button"

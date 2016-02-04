@@ -12,12 +12,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.compscieddy.reading_logger.activities.ScrollingActivity;
+import com.compscieddy.reading_logger.model.Book;
+import com.compscieddy.reading_logger.model.PageLog;
 import com.compscieddy.reading_logger.model.ParseBook;
-import com.compscieddy.reading_logger.model.ParsePageLog;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -88,6 +95,7 @@ public class PageLogInputFragment extends DialogFragment {
       mPageNumberInput.setSelection(mPageNumberInput.getText().length());
     }
   };
+  private String mBookKey;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -102,10 +110,27 @@ public class PageLogInputFragment extends DialogFragment {
     ButterKnife.bind(this, mRootView);
 
     Bundle args = getArguments();
-    String bookId = args.getString(ParseBook.BOOK_ID_EXTRA);
+    mBookKey = args.getString(Book.BOOK_KEY_EXTRA);
+
+    // todo: set mPageNumberInput to the current page number (firebase query needs to be complex, there's no field)
+
+    Book.addCurrentPageNumberListener(mBookKey, new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        if (dataSnapshot.getValue() != null) {
+          PageLog pageLog = dataSnapshot.getValue(PageLog.class);
+          mPageNumberInput.setText(pageLog.getPageNumber());
+        }
+      }
+
+      @Override
+      public void onCancelled(FirebaseError firebaseError) {
+
+      }
+    });
 
     ParseQuery<ParseBook> query = ParseBook.getQuery();
-    query.getInBackground(bookId, new GetCallback<ParseBook>() {
+    query.getInBackground(mBookKey, new GetCallback<ParseBook>() {
       @Override
       public void done(ParseBook book, ParseException e) {
         if (e != null) {
@@ -144,21 +169,36 @@ public class PageLogInputFragment extends DialogFragment {
     mCloseButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        getDialog().dismiss();
+        closeFragment();
       }
     });
     mCheckButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        ParsePageLog pageLog = new ParsePageLog();
-        Log.d(TAG, "Setting page number to this: " + Integer.parseInt(mPageNumberInput.getText().toString()));
-        pageLog.setPageNum(Integer.parseInt(mPageNumberInput.getText().toString()));
-        pageLog.put(ParseBook.class.getSimpleName(), mBook);
-        pageLog.saveInBackground(); // todo should add a callback and show progressbar - or maybe something else if user shouldn't be kept waiting
-        ((ScrollingActivity) getActivity()).refreshBooksList();
-        getDialog().dismiss();
+        HashMap<String, Object> timestamp = new HashMap<>();
+        timestamp.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+        int pageNum = Integer.parseInt(mPageNumberInput.getText().toString());
+
+        Firebase newPageLogRef = FirebaseInfo.pageLogsRef.push();
+        String pageLogKey = newPageLogRef.getKey();
+
+        PageLog pageLog = new PageLog(pageLogKey, pageNum, timestamp);
+        newPageLogRef.setValue(pageLog);
+
+        HashMap<String, Object> bookPageMapping = new HashMap<>();
+        bookPageMapping.put(pageLogKey, true);
+        FirebaseInfo.booksRef.child(mBookKey).child(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS)
+            .updateChildren(bookPageMapping);
+
+        // todo should add a callback and show progressbar - or maybe something else if user shouldn't be kept waiting
+        closeFragment();
       }
     });
+  }
+
+  private void closeFragment() {
+    getDialog().dismiss();
   }
 
 }
