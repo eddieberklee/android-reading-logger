@@ -57,7 +57,7 @@ public class BaseActivity extends AppCompatActivity {
 
 //    mEncodedEmail = sp.getString(Constants.KEY_ENCODED_EMAIL, null);
 
-    if (!TextUtils.isEmpty(mEncodedEmail)) {
+    if (!TextUtils.isEmpty(mEncodedEmail)) { // todo: this should only be called once, right?
       FirebaseInfo.initialize(mEncodedEmail);
     }
 

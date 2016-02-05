@@ -74,6 +74,7 @@ public class MainActivity extends BaseActivity {
             Book book = dataSnapshot.getValue(Book.class);
             if (book == null) {
               // TODO: there is some mismatch - book must have been deleted without an entry from this mapping being deleted
+              return;
             }
             Log.e(TAG, " book.getTitle(): " + book.getTitle() + " book.getOwner(): " + book.getOwner());
             mBooksList.add(book);
@@ -94,9 +95,6 @@ public class MainActivity extends BaseActivity {
 
       @Override
       public void onChildRemoved(DataSnapshot dataSnapshot) {
-        Book removedBook = dataSnapshot.getValue(Book.class);
-        mBooksList.remove(removedBook);
-        mBooksAdapter.notifyDataSetChanged();
       }
 
       @Override
