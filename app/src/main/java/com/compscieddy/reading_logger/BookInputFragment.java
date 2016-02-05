@@ -31,9 +31,6 @@ public class BookInputFragment extends DialogFragment {
 
   public final static String BOOK_DIALOG = "book_dialog";
 
-  public final static String TABLE_BOOK = "ParseBook";
-  public final static String KEY_TITLE = "title";
-
   private View mRootView;
   private String mEncodedEmail;
 

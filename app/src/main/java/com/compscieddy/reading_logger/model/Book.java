@@ -69,6 +69,12 @@ public class Book {
   }
 
 
+  /** Get the current PageLog (aka most recent) by:
+   *
+   * if (dataSnapshot.getValue() != null) {
+   *   PageLog pageLog = dataSnapshot.getValue(PageLog.class); <-- you're going to be pointed right at the PageLog object
+   *   ...
+   */
   public static void addCurrentPageNumberListener(String bookKey, final ValueEventListener listener) {
     FirebaseInfo.booksRef.child(bookKey).child(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS)
         .orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {

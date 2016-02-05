@@ -8,16 +8,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.Utils;
 import com.compscieddy.reading_logger.model.Book;
-import com.compscieddy.reading_logger.model.ParseBook;
+import com.compscieddy.reading_logger.model.PageLog;
 import com.db.chart.model.LineSet;
 import com.db.chart.view.LineChartView;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.github.mikephil.charting.charts.LineChart;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,6 +33,7 @@ public class BookActivity extends BaseActivity {
   @Bind(R.id.of_label) TextView mOfLabel;
   @Bind(R.id.line_chart) LineChart mLineChart;
   @Bind(R.id.line_chart_view) LineChartView mLineChartView;
+  private Book mBook;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -53,29 +55,20 @@ public class BookActivity extends BaseActivity {
 
     Bundle extras = getIntent().getExtras();
     if (extras != null) {
-      String bookId = extras.getString(Book.BOOK_KEY_EXTRA);
-      ParseQuery<ParseBook> query = ParseBook.getQuery();
-      query.getInBackground(bookId, new GetCallback<ParseBook>() {
+      String bookKey = extras.getString(Book.BOOK_KEY_EXTRA);
+
+      FirebaseInfo.booksRef.child(bookKey).addListenerForSingleValueEvent(new ValueEventListener() {
         @Override
-        public void done(ParseBook book, ParseException e) {
-          if (e != null) {
-            Log.e(TAG, "Error getting ParseBook object", e);
-            return;
-          }
-          if (book == null) return;
-          mBookTitle.setText(book.getTitle());
-          book.setTextViewCurrentPageNumToView(mCurrentPageLabel);
-          int maxPage = book.getMaxPageNum();
-          if (maxPage != 0) {
-            mMaxPageLabel.setText(maxPage);
-            mOfLabel.setVisibility(View.VISIBLE);
-            mMaxPageLabel.setVisibility(View.VISIBLE);
-          } else {
-            mOfLabel.setVisibility(View.GONE);
-            mMaxPageLabel.setVisibility(View.GONE);
-          }
+        public void onDataChange(DataSnapshot dataSnapshot) {
+          mBook = dataSnapshot.getValue(Book.class);
+          init();
+        }
+        @Override
+        public void onCancelled(FirebaseError firebaseError) {
+          Log.e(TAG, "Cancelled while trying to fetch book firebaseError:" + firebaseError);
         }
       });
+
     }
 
     /*ArrayList<Entry> valsComp1 = new ArrayList<>();
@@ -105,6 +98,31 @@ public class BookActivity extends BaseActivity {
 
     mLineChartView.addData(dataSet);
     mLineChartView.show();
+  }
+
+  /** Called after mBook has been populated */
+  private void init() {
+    mBookTitle.setText(mBook.getTitle());
+
+    Book.addCurrentPageNumberListener(mBook.getKey(), new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        PageLog mostRecentPageLog = dataSnapshot.getValue(PageLog.class);
+        mCurrentPageLabel.setText(String.valueOf(mostRecentPageLog.getPageNumber()));
+      }
+      @Override
+      public void onCancelled(FirebaseError firebaseError) {}
+    });
+
+    int maxPage = mBook.getMaxPageNum();
+    if (maxPage != 0) {
+      mMaxPageLabel.setText(maxPage);
+      mOfLabel.setVisibility(View.VISIBLE);
+      mMaxPageLabel.setVisibility(View.VISIBLE);
+    } else {
+      mOfLabel.setVisibility(View.GONE);
+      mMaxPageLabel.setVisibility(View.GONE);
+    }
   }
 
 }
