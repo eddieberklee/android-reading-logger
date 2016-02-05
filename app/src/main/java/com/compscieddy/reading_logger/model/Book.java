@@ -1,14 +1,19 @@
 package com.compscieddy.reading_logger.model;
 
+import android.util.Log;
+
 import com.compscieddy.reading_logger.Constants;
 import com.compscieddy.reading_logger.FirebaseInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by elee on 2/1/16.
@@ -17,6 +22,8 @@ import java.util.HashMap;
     "pageLogMappings"
 })
 public class Book {
+
+  private static final String TAG = Book.class.getSimpleName();
 
   public static final String BOOK_KEY_EXTRA = "book_id_extra"; // instead of passing ParseObject, just pass the id since Parse says they cache the object anyway
   private String key;
@@ -108,5 +115,27 @@ public class Book {
     });
   }
 
+  /** Static so that TesterActivity can create books */
+  public static Book createNewBook(String encodedEmail, String title) {
+    Firebase booksRef = new Firebase(Constants.FIREBASE_URL_BOOKS);
+
+    Firebase newBookRef = booksRef.push();
+    String newBookKey = newBookRef.getKey();
+    Log.d(TAG, " newBookKey: " + newBookKey);
+
+    Book book = new Book(newBookKey, encodedEmail, title);
+    HashMap<String, Object> bookMap = (HashMap<String, Object>) new ObjectMapper().convertValue(book, Map.class);
+
+    newBookRef.setValue(bookMap);
+
+    HashMap<String, Object> bookIdMap = new HashMap<>();
+    bookIdMap.put(Constants.FIREBASE_LOCATION_USER_TO_BOOK_MAPPINGS, newBookKey);
+    HashMap<String, Object> userBookIdMap = new HashMap<>();
+    userBookIdMap.put(newBookKey, true);
+    FirebaseInfo.userRef.child(Constants.FIREBASE_LOCATION_USER_TO_BOOK_MAPPINGS)
+        .updateChildren(userBookIdMap);
+
+    return book;
+  }
 
 }

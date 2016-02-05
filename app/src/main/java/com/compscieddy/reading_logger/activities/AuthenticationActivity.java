@@ -69,6 +69,7 @@ public class AuthenticationActivity extends BaseActivity {
             mProgressBar.setVisibility(View.INVISIBLE);
             if (e == null) {
               Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
+              intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
               intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
               startActivity(intent);
             } else {
@@ -133,6 +134,7 @@ public class AuthenticationActivity extends BaseActivity {
                 });
 
                 Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
               }

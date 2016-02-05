@@ -43,7 +43,7 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
   }
 
   @Override
-  public View getView(final int position, View convertView, ViewGroup parent) {
+  public View getView(final int position, View convertView, final ViewGroup parent) {
     if (convertView == null) {
       convertView = LayoutInflater.from(mActivity).inflate(R.layout.item_books, parent, false);
     }
@@ -61,37 +61,30 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
     deleteButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
+        parent.setEnabled(false);
         // todo Delete Page Logs associated with this book first
         FirebaseInfo.booksRef.child(book.getKey()).child(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS)
             .addChildEventListener(new ChildEventListener() {
               @Override
               public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
               }
 
               @Override
               public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
               }
 
               @Override
               public void onChildRemoved(DataSnapshot dataSnapshot) {
-
               }
 
               @Override
               public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
               }
 
               @Override
               public void onCancelled(FirebaseError firebaseError) {
-
               }
             });
-
-        // Delete book
-        FirebaseInfo.booksRef.child(book.getKey()).removeValue();
 
         finalConvertView.animate()
             .translationX(-finalConvertView.getWidth())
@@ -99,10 +92,11 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
             .withEndAction(new Runnable() {
               @Override
               public void run() {
+                // Delete book
+                FirebaseInfo.booksRef.child(book.getKey()).removeValue();
+                parent.setEnabled(true);
                 finalConvertView.setTranslationX(0); // reset for future rows; be a good citizen
                 finalConvertView.setAlpha(1.0f);
-                mBooksList.remove(position);
-                notifyDataSetChanged();
               }
             });
       }

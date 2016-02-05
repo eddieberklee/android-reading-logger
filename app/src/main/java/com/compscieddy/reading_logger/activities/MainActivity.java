@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -95,6 +96,20 @@ public class MainActivity extends BaseActivity {
 
       @Override
       public void onChildRemoved(DataSnapshot dataSnapshot) {
+        /** The data consistency is handled by FirebaseInfo (like deleting a book's corresponding userToBook mappings and associated PageLogs)
+          * but the up-to-date visual changes that need to be made are up to each individual activity/fragment/etc.
+          */
+        String removedBookKey = dataSnapshot.getKey();
+        Book bookToRemove = null;
+        for (Book book : mBooksList) {
+          if (TextUtils.equals(book.getKey(), removedBookKey)) {
+            bookToRemove = book;
+          }
+        }
+        if (bookToRemove != null) {
+          mBooksList.remove(bookToRemove);
+          mBooksAdapter.notifyDataSetChanged();
+        }
       }
 
       @Override
@@ -131,7 +146,7 @@ public class MainActivity extends BaseActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_scrolling, menu);
+    getMenuInflater().inflate(R.menu.menu_main, menu);
     return true;
   }
 
@@ -148,6 +163,8 @@ public class MainActivity extends BaseActivity {
     } else if (id == R.id.action_logout) {
       logout();
       return true;
+    } else if (id == R.id.action_tester) {
+      startActivity(new Intent(MainActivity.this, TesterActivity.class));
     }
     return super.onOptionsItemSelected(item);
   }

@@ -4,7 +4,6 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.compscieddy.reading_logger.model.Book;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.firebase.client.Firebase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -76,25 +70,9 @@ public class BookInputFragment extends DialogFragment {
     if (TextUtils.isEmpty(title)) {
       Utils.showToast(getActivity(), "Please enter a title...");
     } else {
-      Firebase booksRef = new Firebase(Constants.FIREBASE_URL_BOOKS);
-
-      Firebase newBookRef = booksRef.push();
-      String newBookKey = newBookRef.getKey();
-      Log.d(TAG, " newBookKey: " + newBookKey);
-
-      Book book = new Book(newBookKey, mEncodedEmail, title);
-      HashMap<String, Object> bookMap = (HashMap<String, Object>) new ObjectMapper().convertValue(book, Map.class);
-
-      newBookRef.setValue(bookMap);
-
-      HashMap<String, Object> bookIdMap = new HashMap<>();
-      bookIdMap.put(Constants.FIREBASE_LOCATION_USER_TO_BOOK_MAPPINGS, newBookKey);
-      HashMap<String, Object> userBookIdMap = new HashMap<>();
-      userBookIdMap.put(newBookKey, true);
-      FirebaseInfo.userRef.child(Constants.FIREBASE_LOCATION_USER_TO_BOOK_MAPPINGS)
-        .updateChildren(userBookIdMap);
-
+      Book.createNewBook(mEncodedEmail, title);
       closeFragment();
     }
   }
+
 }
