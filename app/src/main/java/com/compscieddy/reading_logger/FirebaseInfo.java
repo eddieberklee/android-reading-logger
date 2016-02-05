@@ -45,9 +45,11 @@ public class FirebaseInfo {
         String bookKey = dataSnapshot.getKey();
         HashMap<String, Object> deletedBookMap = (HashMap<String, Object>) dataSnapshot.getValue();
         HashMap<String, Object> pageLogKeys = (HashMap<String, Object>) deletedBookMap.get(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS);
-        for (String pageLogKey : pageLogKeys.keySet()) {
-          // Delete PageLog
-          FirebaseInfo.pageLogsRef.child(pageLogKey).removeValue();
+        if (pageLogKeys != null) {
+          for (String pageLogKey : pageLogKeys.keySet()) {
+            // Delete PageLog
+            FirebaseInfo.pageLogsRef.child(pageLogKey).removeValue();
+          }
         }
         // Delete User-to-Book Mapping
         FirebaseInfo.userRef.child(Constants.FIREBASE_LOCATION_USER_TO_BOOK_MAPPINGS)

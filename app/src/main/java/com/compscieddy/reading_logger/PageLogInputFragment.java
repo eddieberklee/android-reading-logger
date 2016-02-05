@@ -14,15 +14,11 @@ import android.widget.TextView;
 
 import com.compscieddy.reading_logger.model.Book;
 import com.compscieddy.reading_logger.model.PageLog;
-import com.compscieddy.reading_logger.model.ParseBook;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 
 import java.util.HashMap;
 
@@ -37,7 +33,7 @@ public class PageLogInputFragment extends DialogFragment {
   private static final String TAG = PageLogInputFragment.class.getSimpleName();
 
   public static final String PAGE_NUMBER_DIALOG = "page_number_dialog";
-  private ParseBook mBook;
+  private Book mBook;
   private View mRootView;
 
   @Bind(R.id.number_button_1) View mNumberButton1;
@@ -95,7 +91,6 @@ public class PageLogInputFragment extends DialogFragment {
       mPageNumberInput.setSelection(mPageNumberInput.getText().length());
     }
   };
-  private String mBookKey;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -110,11 +105,24 @@ public class PageLogInputFragment extends DialogFragment {
     ButterKnife.bind(this, mRootView);
 
     Bundle args = getArguments();
-    mBookKey = args.getString(Book.BOOK_KEY_EXTRA);
+    String bookKey = args.getString(Book.BOOK_KEY_EXTRA);
+
+    FirebaseInfo.booksRef.child(bookKey).addListenerForSingleValueEvent(new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        Log.d(TAG, "Retrieving Book snapshot:" + dataSnapshot);
+        mBook = dataSnapshot.getValue(Book.class);
+        init();
+      }
+      @Override
+      public void onCancelled(FirebaseError firebaseError) {
+        Log.e(TAG, "error retrieving book firebaseError:" + firebaseError);
+      }
+    });
 
     // todo: set mPageNumberInput to the current page number (firebase query needs to be complex, there's no field)
 
-    Book.addCurrentPageNumberListener(mBookKey, new ValueEventListener() {
+    Book.addCurrentPageNumberListener(bookKey, new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         if (dataSnapshot.getValue() != null) {
@@ -136,21 +144,6 @@ public class PageLogInputFragment extends DialogFragment {
       }
     });
 
-    ParseQuery<ParseBook> query = ParseBook.getQuery();
-    query.getInBackground(mBookKey, new GetCallback<ParseBook>() {
-      @Override
-      public void done(ParseBook book, ParseException e) {
-        if (e != null) {
-          Log.e(TAG, "Error getting ParseBook object", e);
-          return;
-        }
-        if (book == null) return;
-        mBook = book;
-        mBook.setEditTextCurrentPageNumToView(mPageNumberInput);
-        mBookTitleView.setText(mBook.getTitle());
-      }
-    });
-
     Utils.applyColorFilter(mCheckButton.getDrawable(), getResources().getColor(android.R.color.white));
     Utils.applyColorFilter(mCheckButton.getBackground(), getResources().getColor(R.color.flatui_green_1));
     Utils.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
@@ -159,6 +152,11 @@ public class PageLogInputFragment extends DialogFragment {
     setListeners();
 
     return mRootView;
+  }
+
+  /** init code that requires that mBook be fetched first */
+  private void init() {
+    mBookTitleView.setText(mBook.getTitle());
   }
 
   private void setListeners() {
@@ -195,7 +193,7 @@ public class PageLogInputFragment extends DialogFragment {
 
         HashMap<String, Object> bookPageMapping = new HashMap<>();
         bookPageMapping.put(pageLogKey, true);
-        FirebaseInfo.booksRef.child(mBookKey).child(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS)
+        FirebaseInfo.booksRef.child(mBook.getKey()).child(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS)
             .updateChildren(bookPageMapping);
 
         // todo should add a callback and show progressbar - or maybe something else if user shouldn't be kept waiting
