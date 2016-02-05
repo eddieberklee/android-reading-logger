@@ -25,4 +25,10 @@
         android:layout_height="wrap_content"
         android:text="Add a 'Test' Book"/>
 
+    <Button
+        android:id="@+id/add_test_book_button_week_pagelog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add a 'Test' Book with a Week's PageLogs"/>
+
 </LinearLayout>

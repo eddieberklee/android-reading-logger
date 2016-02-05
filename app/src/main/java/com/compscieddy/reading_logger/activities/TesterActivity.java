@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 public class TesterActivity extends BaseActivity {
 
   @Bind(R.id.add_test_book_button) Button mAddTestBookButton;
+  @Bind(R.id.add_test_book_button_week_pagelog) Button mAddTestBookWeekPageLogButton;
   @Bind(R.id.books_listview) ListView mBooksListView;
 
   private List<Book> mBooks = new ArrayList<>();
