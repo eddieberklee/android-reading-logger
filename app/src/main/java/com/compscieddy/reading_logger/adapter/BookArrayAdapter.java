@@ -127,7 +127,7 @@ public class BookArrayAdapter extends ArrayAdapter<Book> {
 
     bookTitleView.setText(book.getTitle());
 
-    book.addCurrentPageNumberListener(book.getKey(), new ValueEventListener() {
+    book.addGetCurrentPageNumberListener(book.getKey(), new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         if (dataSnapshot.getValue() != null) {
@@ -138,7 +138,7 @@ public class BookArrayAdapter extends ArrayAdapter<Book> {
           currentPageLabel.setVisibility(View.VISIBLE);
           emptyPageLabel.setVisibility(View.GONE);
         } else {
-          Log.e(TAG, "dataSnapshot . getValue() is null");
+          Log.e(TAG, "dataSnapshot getValue() is null when fetching current page number");
         }
       }
 

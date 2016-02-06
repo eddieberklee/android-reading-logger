@@ -122,7 +122,7 @@ public class PageLogInputFragment extends DialogFragment {
 
     // todo: set mPageNumberInput to the current page number (firebase query needs to be complex, there's no field)
 
-    Book.addCurrentPageNumberListener(bookKey, new ValueEventListener() {
+    Book.addGetCurrentPageNumberListener(bookKey, new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         if (dataSnapshot.getValue() != null) {

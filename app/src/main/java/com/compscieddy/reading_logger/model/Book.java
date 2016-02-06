@@ -82,7 +82,7 @@ public class Book {
    *   PageLog pageLog = dataSnapshot.getValue(PageLog.class); <-- you're going to be pointed right at the PageLog object
    *   ...
    */
-  public static void addCurrentPageNumberListener(String bookKey, final ValueEventListener listener) {
+  public static void addGetCurrentPageNumberListener(String bookKey, final ValueEventListener listener) {
     FirebaseInfo.booksRef.child(bookKey).child(Constants.FIREBASE_LOCATION_BOOK_TO_PAGE_LOG_MAPPINGS)
         .orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
       @Override

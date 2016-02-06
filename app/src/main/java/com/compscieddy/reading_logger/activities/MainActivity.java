@@ -67,7 +67,7 @@ public class MainActivity extends BaseActivity {
     FirebaseInfo.userBooksMappingsRef.addChildEventListener(new ChildEventListener() {
       @Override
       public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        Log.e(TAG, "onChildAdded for userBooks");
+        Log.d(TAG, "onChildAdded for userBooks");
         String bookKey = dataSnapshot.getKey();
         FirebaseInfo.booksRef.child(bookKey).addListenerForSingleValueEvent(new ValueEventListener() {
           @Override
@@ -77,7 +77,7 @@ public class MainActivity extends BaseActivity {
               // TODO: there is some mismatch - book must have been deleted without an entry from this mapping being deleted
               return;
             }
-            Log.e(TAG, " book.getTitle(): " + book.getTitle() + " book.getOwner(): " + book.getOwner());
+            Log.d(TAG, " book.getTitle(): " + book.getTitle() + " book.getOwner(): " + book.getOwner());
             mBooksList.add(book);
             mBooksAdapter.notifyDataSetChanged();
           }

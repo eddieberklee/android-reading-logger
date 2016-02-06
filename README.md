@@ -9,6 +9,9 @@ To run:
 TODO:
   * Create an a simple version of books adapter without controls because things get messy within the context of a TesterActivity
     * Not impossible but i'd rather just not deal with it right now
+  * Refactor all static Firebase references to just basically be a glorified String manager that spits out the correct paths
+  * Prevent page logs from going backwards
+
 
 
 
