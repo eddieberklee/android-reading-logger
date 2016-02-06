@@ -95,8 +95,11 @@ public class BooksArrayAdapter extends ArrayAdapter<Book> {
                 // Delete book
                 FirebaseInfo.booksRef.child(book.getKey()).removeValue();
                 parent.setEnabled(true);
-                finalConvertView.setTranslationX(0); // reset for future rows; be a good citizen
-                finalConvertView.setAlpha(1.0f);
+                /** The animation and start delay is to prevent flickering because there's some slight
+                  * network lag before the onChildRemoved() callback removes the list item.
+                  */
+                finalConvertView.animate().setStartDelay(200).translationX(0); // reset for future rows; be a good citizen
+                finalConvertView.animate().setStartDelay(200).alpha(1.0f);
               }
             });
       }
