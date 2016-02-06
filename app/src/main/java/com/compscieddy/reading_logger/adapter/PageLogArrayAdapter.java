@@ -46,6 +46,7 @@ public class PageLogArrayAdapter extends ArrayAdapter<PageLog> {
     Date dateCreated = new Date(timestampCreated);
     c.setTime(dateCreated);
     String dayWord = c.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US);
+    dayWord = dayWord.substring(0, 3);
     String dayNumber = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
 
     int pageNumber = pageLog.getPageNumber();

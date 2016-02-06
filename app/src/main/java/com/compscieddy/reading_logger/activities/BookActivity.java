@@ -18,6 +18,7 @@ import com.compscieddy.reading_logger.model.Book;
 import com.compscieddy.reading_logger.model.PageLog;
 import com.db.chart.model.ChartSet;
 import com.db.chart.model.LineSet;
+import com.db.chart.view.AxisController;
 import com.db.chart.view.LineChartView;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -125,13 +126,16 @@ public class BookActivity extends BaseActivity {
           }
 
           @Override
-          public void onChildRemoved(DataSnapshot dataSnapshot) {}
+          public void onChildRemoved(DataSnapshot dataSnapshot) {
+          }
 
           @Override
-          public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+          public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+          }
 
           @Override
-          public void onCancelled(FirebaseError firebaseError) {}
+          public void onCancelled(FirebaseError firebaseError) {
+          }
         });
 
     /*ArrayList<Entry> valsComp1 = new ArrayList<>();
@@ -149,8 +153,6 @@ public class BookActivity extends BaseActivity {
 
     mPageLogAdapter = new PageLogArrayAdapter(BookActivity.this, mPageLogs);
     mPageLogsListView.setAdapter(mPageLogAdapter);
-
-    mLineChartView.setAxisBorderValues(0, 10, 1);
 
     LineSet dataSet = new LineSet(new String[] {
         "asdf", "fdsa", "1234"
@@ -170,17 +172,30 @@ public class BookActivity extends BaseActivity {
     ArrayList<String> mXValues = new ArrayList<>();
     ArrayList<Float> mYValues = new ArrayList<>();
 
+    int maxValue = -1;
     for (int i = 0; i < mPageLogs.size(); i++) {
       PageLog pageLog = mPageLogs.get(i);
       int pageNumber = pageLog.getPageNumber();
-      mXValues.add(String.valueOf(pageNumber));
-      if (i > 0) { // has a previous pagelog
+      if (pageNumber > maxValue) maxValue = pageNumber;
+      mXValues.add(String.valueOf(i));
+      mYValues.add((float) pageNumber);
+
+      /*if (i > 0) { // has a previous pagelog
         int previousPageNumber = mPageLogs.get(i - 1).getPageNumber();
-        mYValues.add((float) (pageNumber - previousPageNumber));
       } else {
         mYValues.add(-1f);
-      }
+      }*/
     }
+    int step = 5;
+    Log.d(TAG, "Starting maxValue:" + maxValue);
+    maxValue += 3; // add some margin between max value and the ceiling
+    if (maxValue % step != 0) {
+      Log.d(TAG, "maxValue was " + maxValue);
+      maxValue += 5 - (maxValue % step);
+      Log.d(TAG, "maxValue is now " + maxValue);
+    }
+    mLineChartView.setAxisBorderValues(0, maxValue, step);
+    mLineChartView.setXLabels(AxisController.LabelPosition.NONE);
 
     /** This is so stupid - rewrite this, I'm just tryna get a motherfucker working rn */
     float[] yValues = new float[mYValues.size()];

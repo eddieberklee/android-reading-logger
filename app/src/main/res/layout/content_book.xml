@@ -44,11 +44,6 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/page_log_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"/>
-
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"
         android:layout_width="300dp"
@@ -58,6 +53,11 @@
     <com.db.chart.view.LineChartView
         android:id="@+id/line_chart_view"
         android:layout_width="300dp"
+        android:layout_height="200dp"/>
+
+    <ListView
+        android:id="@+id/page_log_list_view"
+        android:layout_width="match_parent"
         android:layout_height="200dp"/>
 
 
