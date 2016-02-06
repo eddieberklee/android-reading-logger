@@ -166,10 +166,10 @@ public class BookActivity extends BaseActivity {
 //    mLineChartView.show();
   }
 
-  private ArrayList<String> mXValues = new ArrayList<>();
-  private ArrayList<Float> mYValues = new ArrayList<>();
-
   private void refreshChart() {
+    ArrayList<String> mXValues = new ArrayList<>();
+    ArrayList<Float> mYValues = new ArrayList<>();
+
     for (int i = 0; i < mPageLogs.size(); i++) {
       PageLog pageLog = mPageLogs.get(i);
       int pageNumber = pageLog.getPageNumber();
@@ -207,7 +207,6 @@ public class BookActivity extends BaseActivity {
     dataSet.getScreenPoints();
     mLineChartView.show();
 
-    // todo: fix this set - this set shit is a bitch. Why can't I replace the data, why's it always gotta be adding it and shit
   }
 
   /** Called after mBook has been populated */

@@ -10,7 +10,10 @@ import android.widget.TextView;
 import com.compscieddy.reading_logger.R;
 import com.compscieddy.reading_logger.model.PageLog;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by elee on 2/5/16.
@@ -38,6 +41,13 @@ public class PageLogArrayAdapter extends ArrayAdapter<PageLog> {
 
     PageLog pageLog = mPageLogs.get(position);
     long timestampCreated = pageLog.getTimestampCreatedLong();
+    Calendar c = Calendar.getInstance();
+
+    Date dateCreated = new Date(timestampCreated);
+    c.setTime(dateCreated);
+    String dayWord = c.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US);
+    String dayNumber = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
+
     int pageNumber = pageLog.getPageNumber();
     int pagesRead = -1;
 
@@ -49,7 +59,7 @@ public class PageLogArrayAdapter extends ArrayAdapter<PageLog> {
     if (pagesRead != -1) {
       numPagesRead.setText(String.valueOf(pagesRead));
     }
-    day.setText(String.valueOf(timestampCreated));
+    day.setText(dayWord + " " + dayNumber);
     readToPage.setText(String.valueOf(pageNumber));
 
     return convertView;
