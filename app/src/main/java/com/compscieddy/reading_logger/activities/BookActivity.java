@@ -150,7 +150,7 @@ public class BookActivity extends BaseActivity {
     mPageLogAdapter = new PageLogArrayAdapter(BookActivity.this, mPageLogs);
     mPageLogsListView.setAdapter(mPageLogAdapter);
 
-//    mLineChartView.setAxisBorderValues(0, 30, 10);
+    mLineChartView.setAxisBorderValues(0, 10, 1);
 
     LineSet dataSet = new LineSet(new String[] {
         "asdf", "fdsa", "1234"
