@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.R;
-import com.compscieddy.reading_logger.adapter.BooksArrayAdapter;
+import com.compscieddy.reading_logger.adapter.BookArrayAdapter;
 import com.compscieddy.reading_logger.model.Book;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class TesterActivity extends BaseActivity {
   @Bind(R.id.books_listview) ListView mBooksListView;
 
   private List<Book> mBooks = new ArrayList<>();
-  private BooksArrayAdapter mBooksAdapter;
+  private BookArrayAdapter mBooksAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class TesterActivity extends BaseActivity {
     setSupportActionBar(toolbar);
     ButterKnife.bind(this);
 
-    mBooksAdapter = new BooksArrayAdapter(TesterActivity.this, mBooks);
+    mBooksAdapter = new BookArrayAdapter(TesterActivity.this, mBooks);
     mBooksListView.setAdapter(mBooksAdapter);
 
     setClickListeners();

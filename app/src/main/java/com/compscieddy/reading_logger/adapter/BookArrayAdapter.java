@@ -29,14 +29,14 @@ import java.util.List;
 /**
  * Created by elee on 12/3/15.
  */
-public class BooksArrayAdapter extends ArrayAdapter<Book> {
+public class BookArrayAdapter extends ArrayAdapter<Book> {
 
-  private static final String TAG = BooksArrayAdapter.class.getSimpleName();
+  private static final String TAG = BookArrayAdapter.class.getSimpleName();
 
   Activity mActivity; // Activity cause I need the .getFragmentManager()
   List<Book> mBooksList;
 
-  public BooksArrayAdapter(Activity activity, List<Book> objects) {
+  public BookArrayAdapter(Activity activity, List<Book> objects) {
     super(activity, 0, objects);
     mActivity = activity;
     mBooksList = objects;

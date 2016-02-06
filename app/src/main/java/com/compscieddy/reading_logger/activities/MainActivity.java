@@ -17,7 +17,7 @@ import android.widget.ListView;
 import com.compscieddy.reading_logger.BookInputFragment;
 import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.R;
-import com.compscieddy.reading_logger.adapter.BooksArrayAdapter;
+import com.compscieddy.reading_logger.adapter.BookArrayAdapter;
 import com.compscieddy.reading_logger.model.Book;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -32,7 +32,7 @@ public class MainActivity extends BaseActivity {
   private static final String TAG = MainActivity.class.getSimpleName();
 
   ListView mBooksListView;
-  BooksArrayAdapter mBooksAdapter;
+  BookArrayAdapter mBooksAdapter;
   List<Book> mBooksList;
 
   @Override
@@ -61,7 +61,7 @@ public class MainActivity extends BaseActivity {
     init();
 
     mBooksList = new ArrayList<>();
-    mBooksAdapter = new BooksArrayAdapter(MainActivity.this, mBooksList);
+    mBooksAdapter = new BookArrayAdapter(MainActivity.this, mBooksList);
     mBooksListView.setAdapter(mBooksAdapter);
 
     FirebaseInfo.userBooksMappingsRef.addChildEventListener(new ChildEventListener() {
