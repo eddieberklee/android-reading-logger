@@ -12,14 +12,10 @@ import android.widget.TextView;
 import com.compscieddy.reading_logger.Constants;
 import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.R;
-import com.compscieddy.reading_logger.Utils;
 import com.compscieddy.reading_logger.adapter.PageLogArrayAdapter;
 import com.compscieddy.reading_logger.model.Book;
 import com.compscieddy.reading_logger.model.PageLog;
-import com.db.chart.model.ChartSet;
-import com.db.chart.model.LineSet;
-import com.db.chart.view.AxisController;
-import com.db.chart.view.LineChartView;
+import com.compscieddy.reading_logger.ui.EddieBarGraph;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
@@ -41,7 +37,7 @@ public class BookActivity extends BaseActivity {
   @Bind(R.id.max_page_label) TextView mMaxPageLabel;
   @Bind(R.id.of_label) TextView mOfLabel;
   @Bind(R.id.line_chart) LineChart mLineChart;
-  @Bind(R.id.line_chart_view) LineChartView mLineChartView;
+  @Bind(R.id.eddie_bar_graph) EddieBarGraph mEddieBarGraph;
   @Bind(R.id.page_log_list_view) ListView mPageLogsListView;
 
   private Book mBook;
@@ -154,73 +150,21 @@ public class BookActivity extends BaseActivity {
     mPageLogAdapter = new PageLogArrayAdapter(BookActivity.this, mPageLogs);
     mPageLogsListView.setAdapter(mPageLogAdapter);
 
-    LineSet dataSet = new LineSet(new String[] {
-        "asdf", "fdsa", "1234"
-    }, new float[] {
-        1, 5, 20,
-    });
-    dataSet.setDotsColor(getResources().getColor(R.color.flatui_blue_1));
-    dataSet.setThickness(Utils.dpToPx(2));
-    dataSet.setColor(getResources().getColor(R.color.flatui_blue_2));
-    dataSet.setFill(getResources().getColor(R.color.flatui_blue_1_transp_50));
-
-//    mLineChartView.addData(dataSet);
-//    mLineChartView.show();
   }
 
   private void refreshChart() {
-    ArrayList<String> mXValues = new ArrayList<>();
-    ArrayList<Float> mYValues = new ArrayList<>();
+    ArrayList<String> xValues = new ArrayList<>();
+    ArrayList<Float> yValues = new ArrayList<>();
 
     int maxValue = -1;
     for (int i = 0; i < mPageLogs.size(); i++) {
       PageLog pageLog = mPageLogs.get(i);
       int pageNumber = pageLog.getPageNumber();
       if (pageNumber > maxValue) maxValue = pageNumber;
-      mXValues.add(String.valueOf(i));
-      mYValues.add((float) pageNumber);
-
-      /*if (i > 0) { // has a previous pagelog
-        int previousPageNumber = mPageLogs.get(i - 1).getPageNumber();
-      } else {
-        mYValues.add(-1f);
-      }*/
-    }
-    int step = 5;
-    Log.d(TAG, "Starting maxValue:" + maxValue);
-    maxValue += 3; // add some margin between max value and the ceiling
-    if (maxValue % step != 0) {
-      Log.d(TAG, "maxValue was " + maxValue);
-      maxValue += 5 - (maxValue % step);
-      Log.d(TAG, "maxValue is now " + maxValue);
-    }
-    mLineChartView.setAxisBorderValues(0, maxValue, step);
-    mLineChartView.setXLabels(AxisController.LabelPosition.NONE);
-
-    /** This is so stupid - rewrite this, I'm just tryna get a motherfucker working rn */
-    float[] yValues = new float[mYValues.size()];
-    String[] xValues = new String[mXValues.size()];
-    for (int i = 0; i < mXValues.size(); i++) {
-      xValues[i] = mXValues.get(i);
-    }
-    for (int i = 0; i < mYValues.size(); i++) {
-      yValues[i] = mYValues.get(i).floatValue();
+      xValues.add(String.valueOf(i));
+      yValues.add((float) pageNumber);
     }
 
-    Log.e(TAG, "Number of entries in each set x:" + xValues.length + " y:" + yValues.length);
-
-    LineSet dataSet = new LineSet(xValues, yValues);
-    dataSet.setDotsColor(getResources().getColor(R.color.flatui_blue_1));
-    dataSet.setThickness(Utils.dpToPx(2));
-    dataSet.setColor(getResources().getColor(R.color.flatui_blue_2));
-    dataSet.setFill(getResources().getColor(R.color.flatui_blue_1_transp_50));
-
-    ArrayList<ChartSet> fullChartSet = new ArrayList<>();
-    fullChartSet.add(dataSet);
-    mLineChartView.addData(fullChartSet);
-    mLineChartView.getData();
-    dataSet.getScreenPoints();
-    mLineChartView.show();
 
   }
 

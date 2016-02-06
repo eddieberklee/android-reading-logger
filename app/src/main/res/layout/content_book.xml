@@ -50,10 +50,10 @@
         android:layout_height="100dp"
         android:visibility="gone"/>
 
-    <com.db.chart.view.LineChartView
-        android:id="@+id/line_chart_view"
-        android:layout_width="300dp"
-        android:layout_height="200dp"/>
+    <com.compscieddy.reading_logger.ui.EddieBarGraph
+        android:id="@+id/eddie_bar_graph"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"/>
 
     <ListView
         android:id="@+id/page_log_list_view"
