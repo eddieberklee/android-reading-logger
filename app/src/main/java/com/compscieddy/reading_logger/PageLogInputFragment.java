@@ -144,10 +144,10 @@ public class PageLogInputFragment extends DialogFragment {
       }
     });
 
-    Utils.applyColorFilter(mCheckButton.getDrawable(), getResources().getColor(android.R.color.white));
-    Utils.applyColorFilter(mCheckButton.getBackground(), getResources().getColor(R.color.flatui_green_1));
-    Utils.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
-    Utils.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
+    Util.applyColorFilter(mCheckButton.getDrawable(), getResources().getColor(android.R.color.white));
+    Util.applyColorFilter(mCheckButton.getBackground(), getResources().getColor(R.color.flatui_green_1));
+    Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
+    Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
 
     setListeners();
 

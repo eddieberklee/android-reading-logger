@@ -14,7 +14,7 @@ import android.widget.Toast;
 /**
  * Created by elee on 12/3/15.
  */
-public class Utils {
+public class Util {
   public static void applyColorFilter(Drawable drawable, int color) {
     applyColorFilter(drawable, color, false);
   }

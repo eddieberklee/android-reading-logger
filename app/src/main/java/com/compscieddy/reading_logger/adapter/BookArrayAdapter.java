@@ -16,7 +16,7 @@ import com.compscieddy.reading_logger.Constants;
 import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.PageLogInputFragment;
 import com.compscieddy.reading_logger.R;
-import com.compscieddy.reading_logger.Utils;
+import com.compscieddy.reading_logger.Util;
 import com.compscieddy.reading_logger.model.Book;
 import com.compscieddy.reading_logger.model.PageLog;
 import com.firebase.client.ChildEventListener;
@@ -55,7 +55,7 @@ public class BookArrayAdapter extends ArrayAdapter<Book> {
     final TextView emptyPageLabel = (TextView) convertView.findViewById(R.id.empty_page_label);
     ImageView newBookmarkButton = (ImageView) convertView.findViewById(R.id.new_bookmark_button);
     ImageView deleteButton = (ImageView) convertView.findViewById(R.id.delete_button);
-    Utils.applyColorFilter(deleteButton.getDrawable(), mActivity.getResources().getColor(R.color.book_row_button_color));
+    Util.applyColorFilter(deleteButton.getDrawable(), mActivity.getResources().getColor(R.color.book_row_button_color));
 
     final View finalConvertView = convertView;
     deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +105,7 @@ public class BookArrayAdapter extends ArrayAdapter<Book> {
       }
     });
 
-    Utils.applyColorFilter(newBookmarkButton.getDrawable(), mActivity.getResources().getColor(R.color.book_row_button_color));
+    Util.applyColorFilter(newBookmarkButton.getDrawable(), mActivity.getResources().getColor(R.color.book_row_button_color));
 
     newBookmarkButton.setOnClickListener(new View.OnClickListener() {
       @Override

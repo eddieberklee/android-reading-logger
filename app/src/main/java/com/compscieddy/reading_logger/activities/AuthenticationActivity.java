@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 import com.compscieddy.reading_logger.Constants;
 import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.R;
-import com.compscieddy.reading_logger.Utils;
+import com.compscieddy.reading_logger.Util;
 import com.compscieddy.reading_logger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.AuthData;
@@ -77,7 +77,7 @@ public class AuthenticationActivity extends BaseActivity {
               switch (exceptionCode) {
                 case ParseException.USERNAME_TAKEN:
                   Log.e(TAG, "Username/email exists but the password must be wrong", e);
-                  Utils.showToast(AuthenticationActivity.this, "Email was recognized, but wrong password. Try again.");
+                  Util.showToast(AuthenticationActivity.this, "Email was recognized, but wrong password. Try again.");
                   break;
                 case ParseException.OBJECT_NOT_FOUND:
                 case ParseException.EMAIL_NOT_FOUND:
@@ -99,7 +99,7 @@ public class AuthenticationActivity extends BaseActivity {
       public void onClick(View v) {
         final String email = mEmailInput.getText().toString();
         final String password = mPasswordInput.getText().toString();
-        if (!Utils.isEmailValid(email)) {
+        if (!Util.isEmailValid(email)) {
           // todo: special handling for invalid email address
         }
 
@@ -109,9 +109,9 @@ public class AuthenticationActivity extends BaseActivity {
             new Firebase.ValueResultHandler<Map<String, Object>>() {
               @Override
               public void onSuccess(Map<String, Object> result) {
-                Utils.showToast(AuthenticationActivity.this, "Hi " + email + "! :)");
+                Util.showToast(AuthenticationActivity.this, "Hi " + email + "! :)");
 
-                final String encodedEmail = Utils.encodeEmail(email);
+                final String encodedEmail = Util.encodeEmail(email);
 
                 HashMap<String, Object> timestampJoined = new HashMap<>();
                 timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
@@ -142,7 +142,7 @@ public class AuthenticationActivity extends BaseActivity {
               @Override
               public void onError(FirebaseError firebaseError) {
                 if (firebaseError.getCode() == FirebaseError.EMAIL_TAKEN) {
-                  Utils.showToast(AuthenticationActivity.this, "Email already exists - trying to log you in instead");
+                  Util.showToast(AuthenticationActivity.this, "Email already exists - trying to log you in instead");
                   loginUser(email, password);
                 } else {
                   Log.e(TAG, "firebaseError: " + firebaseError);
@@ -161,7 +161,7 @@ public class AuthenticationActivity extends BaseActivity {
     FirebaseInfo.ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
       @Override
       public void onAuthenticated(final AuthData authData) {
-        String encodedEmail = Utils.encodeEmail(email);
+        String encodedEmail = Util.encodeEmail(email);
 
         if (authData != null) {
           SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AuthenticationActivity.this);
@@ -211,7 +211,7 @@ public class AuthenticationActivity extends BaseActivity {
         } else {
           int exceptionCode = e.getCode();
           Log.e(TAG, "ParseException while signing up in (exception code: " + exceptionCode + ")", e);
-          Utils.showToast(AuthenticationActivity.this, "Signup failed. Try again."); // TODO: be more descriptive :)
+          Util.showToast(AuthenticationActivity.this, "Signup failed. Try again."); // TODO: be more descriptive :)
         }
       }
 

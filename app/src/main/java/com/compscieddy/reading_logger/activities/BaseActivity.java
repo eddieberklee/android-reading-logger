@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.compscieddy.reading_logger.Constants;
 import com.compscieddy.reading_logger.FirebaseInfo;
-import com.compscieddy.reading_logger.Utils;
+import com.compscieddy.reading_logger.Util;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -37,7 +37,7 @@ public class BaseActivity extends AppCompatActivity {
         startActivity(intent);
       }
     } else {
-      mEncodedEmail = Utils.encodeEmail((String) FirebaseInfo.ref.getAuth().getProviderData().get("email"));
+      mEncodedEmail = Util.encodeEmail((String) FirebaseInfo.ref.getAuth().getProviderData().get("email"));
       Log.d(TAG, "User logged in as " + mEncodedEmail);
     }
 

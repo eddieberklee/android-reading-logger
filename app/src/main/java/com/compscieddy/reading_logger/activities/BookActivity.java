@@ -165,6 +165,7 @@ public class BookActivity extends BaseActivity {
       yValues.add((float) pageNumber);
     }
 
+    mEddieBarGraph.setData(xValues, yValues);
 
   }
 
