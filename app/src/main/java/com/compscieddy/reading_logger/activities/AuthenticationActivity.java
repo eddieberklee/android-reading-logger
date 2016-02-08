@@ -21,10 +21,6 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,42 +53,8 @@ public class AuthenticationActivity extends BaseActivity {
     mEmailInput.setText("test@test.com");
     mPasswordInput.setText("password");
 
-    mAuthenticationButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        mProgressBar.setVisibility(View.VISIBLE);
-        final String email = mEmailInput.getText().toString();
-        final String password = mPasswordInput.getText().toString();
-        ParseUser.logInInBackground(email, password, new LogInCallback() {
-          @Override
-          public void done(ParseUser user, ParseException e) {
-            mProgressBar.setVisibility(View.INVISIBLE);
-            if (e == null) {
-              Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
-              intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-              startActivity(intent);
-            } else {
-              int exceptionCode = e.getCode();
-              switch (exceptionCode) {
-                case ParseException.USERNAME_TAKEN:
-                  Log.e(TAG, "Username/email exists but the password must be wrong", e);
-                  Util.showToast(AuthenticationActivity.this, "Email was recognized, but wrong password. Try again.");
-                  break;
-                case ParseException.OBJECT_NOT_FOUND:
-                case ParseException.EMAIL_NOT_FOUND:
-                  Log.d(TAG, "Username/email doesn't exist so going to try and signup the user instead.", e);
-                  signupUser(email, password);
-                  break;
-                default:
-                  Log.e(TAG, "ParseException while logging in (exception code: " + exceptionCode + ")", e);
-                  break;
-              }
-            }
-          }
-        });
-      }
-    });
+    // todo: gotta work with this progressbar!!
+    // mProgressBar.setVisibility(View.VISIBLE);
 
     mAuthenticationButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -191,30 +153,6 @@ public class AuthenticationActivity extends BaseActivity {
       public void onAuthenticationError(FirebaseError firebaseError) {
 
       }
-    });
-  }
-
-  private void signupUser(String email, String password) {
-    mProgressBar.setVisibility(View.VISIBLE);
-    ParseUser newUser = new ParseUser();
-    newUser.setUsername(email);
-    newUser.setEmail(email);
-    newUser.setPassword(password);
-    newUser.signUpInBackground(new SignUpCallback() {
-      @Override
-      public void done(ParseException e) {
-        mProgressBar.setVisibility(View.INVISIBLE);
-        if (e == null) {
-          Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
-          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-          startActivity(intent);
-        } else {
-          int exceptionCode = e.getCode();
-          Log.e(TAG, "ParseException while signing up in (exception code: " + exceptionCode + ")", e);
-          Util.showToast(AuthenticationActivity.this, "Signup failed. Try again."); // TODO: be more descriptive :)
-        }
-      }
-
     });
   }
 
