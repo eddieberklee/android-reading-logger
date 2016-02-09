@@ -161,6 +161,7 @@ public class Util {
     return !(userName.equals(""));
   }
 
+  /** Encoding email for Firebase */
   public static String encodeEmail(String userEmail) {
     return userEmail.replace(".", ",");
   }
