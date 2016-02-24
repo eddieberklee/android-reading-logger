@@ -4,15 +4,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.compscieddy.eddie_utils.Etils;
+import com.compscieddy.eddie_utils.Lawg;
 import com.compscieddy.reading_logger.Constants;
 import com.compscieddy.reading_logger.FirebaseInfo;
 import com.compscieddy.reading_logger.R;
-import com.compscieddy.reading_logger.Util;
 import com.compscieddy.reading_logger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.AuthData;
@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 
 public class AuthenticationActivity extends BaseActivity {
 
-  private static final String TAG = AuthenticationActivity.class.getSimpleName();
+  private static final Lawg lawg = Lawg.newInstance(AuthenticationActivity.class.getSimpleName());
 
   @Bind(R.id.signup_login_button) View mAuthenticationButton;
   @Bind(R.id.email_input) EditText mEmailInput;
@@ -61,7 +61,7 @@ public class AuthenticationActivity extends BaseActivity {
       public void onClick(View v) {
         final String email = mEmailInput.getText().toString();
         final String password = mPasswordInput.getText().toString();
-        if (!Util.isEmailValid(email)) {
+        if (!Etils.isEmailValid(email)) {
           // todo: special handling for invalid email address
         }
 
@@ -71,9 +71,9 @@ public class AuthenticationActivity extends BaseActivity {
             new Firebase.ValueResultHandler<Map<String, Object>>() {
               @Override
               public void onSuccess(Map<String, Object> result) {
-                Util.showToast(AuthenticationActivity.this, "Hi " + email + "! :)");
+                Etils.showToast(AuthenticationActivity.this, "Hi " + email + "! :)");
 
-                final String encodedEmail = Util.encodeEmail(email);
+                final String encodedEmail = Etils.encodeEmail(email);
 
                 HashMap<String, Object> timestampJoined = new HashMap<>();
                 timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
@@ -104,10 +104,10 @@ public class AuthenticationActivity extends BaseActivity {
               @Override
               public void onError(FirebaseError firebaseError) {
                 if (firebaseError.getCode() == FirebaseError.EMAIL_TAKEN) {
-                  Util.showToast(AuthenticationActivity.this, "Email already exists - trying to log you in instead");
+                  Etils.showToast(AuthenticationActivity.this, "Email already exists - trying to log you in instead");
                   loginUser(email, password);
                 } else {
-                  Log.e(TAG, "firebaseError: " + firebaseError);
+                  lawg.e("firebaseError: " + firebaseError);
                 }
               }
             }
@@ -123,7 +123,7 @@ public class AuthenticationActivity extends BaseActivity {
     FirebaseInfo.ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
       @Override
       public void onAuthenticated(final AuthData authData) {
-        String encodedEmail = Util.encodeEmail(email);
+        final String encodedEmail = Etils.encodeEmail(email);
 
         if (authData != null) {
           SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AuthenticationActivity.this);
@@ -134,14 +134,21 @@ public class AuthenticationActivity extends BaseActivity {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
           @Override
           public void onDataChange(DataSnapshot dataSnapshot) {
-            Log.d(TAG, "Logged in to email:" + email);
+            lawg.d("Logged in to email:" + email);
             User user = dataSnapshot.getValue(User.class);
-            Log.d(TAG, "user:" + user);
+            lawg.d("user:" + user);
+
+            // If it doesn't exist, just recreate it - this can happen when the database is cleared from the web dashboard
+            if (dataSnapshot.getValue() == null) {
+              populateUserFirebaseData(lawg, encodedEmail);
+            }
+
 
             Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
           }
+
           @Override
           public void onCancelled(FirebaseError firebaseError) {
 
@@ -149,11 +156,23 @@ public class AuthenticationActivity extends BaseActivity {
         });
 
       }
+
       @Override
       public void onAuthenticationError(FirebaseError firebaseError) {
 
       }
     });
+  }
+
+  private void populateUserFirebaseData(Lawg lawg, String encodedEmail) {
+    lawg.d("Doesn't exist so repopulating this data");
+
+    HashMap<String, Object> timestampJoined = new HashMap<>();
+    timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+    User newUser = new User(encodedEmail, timestampJoined);
+    Firebase newUserRef = new Firebase(Constants.FIREBASE_URL_USERS).child(encodedEmail);
+    newUserRef.setValue(newUser);
   }
 
 }

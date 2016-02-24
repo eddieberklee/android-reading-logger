@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.compscieddy.eddie_utils.Etils;
 import com.compscieddy.reading_logger.R;
-import com.compscieddy.reading_logger.Util;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class EddieBarGraph extends FrameLayout {
   public EddieBarGraph(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
 
-    int axisThickness = Util.dpToPx(3);
+    int axisThickness = Etils.dpToPx(3);
 
     View xAxis = new View(context);
     xAxis.setBackgroundColor(getResources().getColor(R.color.black));

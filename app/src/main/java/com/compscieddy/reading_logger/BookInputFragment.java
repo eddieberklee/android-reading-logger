@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.compscieddy.eddie_utils.Etils;
 import com.compscieddy.reading_logger.model.Book;
 
 import butterknife.Bind;
@@ -53,8 +54,8 @@ public class BookInputFragment extends DialogFragment {
     mRootView = inflater.inflate(R.layout.fragment_book_input, null);
     ButterKnife.bind(this, mRootView);
 
-    Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
-    Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(R.color.white));
+    Etils.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
+    Etils.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(R.color.white));
 
     return mRootView;
   }
@@ -68,7 +69,7 @@ public class BookInputFragment extends DialogFragment {
   public void addBook() {
     String title = mBookTitleInput.getText().toString();
     if (TextUtils.isEmpty(title)) {
-      Util.showToast(getActivity(), "Please enter a title...");
+      Etils.showToast(getActivity(), "Please enter a title...");
     } else {
       Book.createNewBook(mEncodedEmail, title);
       closeFragment();

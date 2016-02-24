@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.compscieddy.eddie_utils.Etils;
 import com.compscieddy.reading_logger.model.Book;
 import com.compscieddy.reading_logger.model.PageLog;
 import com.firebase.client.DataSnapshot;
@@ -144,10 +145,10 @@ public class PageLogInputFragment extends DialogFragment {
       }
     });
 
-    Util.applyColorFilter(mCheckButton.getDrawable(), getResources().getColor(android.R.color.white));
-    Util.applyColorFilter(mCheckButton.getBackground(), getResources().getColor(R.color.flatui_green_1));
-    Util.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
-    Util.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
+    Etils.applyColorFilter(mCheckButton.getDrawable(), getResources().getColor(android.R.color.white));
+    Etils.applyColorFilter(mCheckButton.getBackground(), getResources().getColor(R.color.flatui_green_1));
+    Etils.applyColorFilter(mCloseButton.getDrawable(), getResources().getColor(android.R.color.white));
+    Etils.applyColorFilter(mCloseButton.getBackground(), getResources().getColor(R.color.flatui_red_1));
 
     setListeners();
 
